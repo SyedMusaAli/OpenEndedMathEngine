@@ -1,0 +1,226 @@
+case 1:			(solving an excel file)
+r.learnFormulaStatic("sum=a+b");
+r.learnFormulaStatic("a=sum-b");
+r.learnFormulaStatic("b=sum-a");
+xfile.evaluate("myfile.xls");
+
+comments: make 3 columns in xls: a, b , sum and put "???" in one of em
+
+case 2:			(solving an excel file)
+r.learnFormulaStatic("speed=dist/time");
+r.learnFormulaStatic("dist=final_pos-initial_pos");
+r.learnFormulaStatic("time=final_t-initial_t");
+xfile.evaluate("myfile.xls");
+
+comments: make 7 columns in xls: initial_pos, final_pos, initial_t, final_t, time, dist, speed and put "???" in last 3
+
+case 3:			(factorial)
+
+r.learnFormula("&fac:(n)","n*&fac:(n-1)",kw);
+r.learnFormula("&fac:(1)","1",kw);
+node n = r.TransformationalQuery(new node("&fac:(3)"), kw);
+
+case 4:			(derivative)
+
+ArrayList<String> kw = new ArrayList<String>();
+r.learnFormula("&d/(&d*x)*a*x", "(a-1)*x*&d/(&d*x)*x", kw);
+r.learnFormula("&d/(&d*x)*x", "1", kw);
+node n = r.TransformationalQuery(new node("&d/(&d*x)*3*x"), kw);
+System.out.println(n.infix());
+		
+case 5: xml stuff
+
+xml.xmlWrite(f.formulaStr, "formula");
+xml.xmlWrite(f2.formulaStr, "formula");
+xml.xSave();
+xml.xmlRead("kbtest.xml", "formula");
+
+case 6: (derivative)
+
+node n =new node("&derivate:(&pow:(x,2)+&pow:(x,3),x)");
+		
+ArrayList<String> kw = new ArrayList<String>();
+//r.learnFormula("&derivate:(&pow(&e,u),x)", "&pow(&e,u)*&derivative:(u,x)", kw);
+r.learnFormula("a+0","a", kw);
+r.learnFormula("&derivate:(&pow:(u,a),x)", "a*&pow:(u,a-1)*&derivate:(u,x)", kw);
+r.learnFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
+r.learnFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
+
+r.learnFormula("&derivate:(x,x)", "1", kw);
+r.learnFormula("&pow:(x,1)", "x", kw);
+node ans = r.TransformationalQuery(n, kw);
+
+ans.show_condensed();
+System.out.println(ans.infix());
+System.out.println(ans.dfs2());
+
+case 7:	derivate of ln
+
+node n =new node("&derivate:(&ln:(x),x)");
+ArrayList<String> kw = new ArrayList<String>();
+r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
+r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
+r.learnFormula("a+0","a", kw);
+r.learnFormula("a*1","a", kw);
+r.learnFormula("&derivate:(&pow:(u,a),x)", "a*&pow:(u,a-1)*&derivate:(u,x)", kw);
+r.learnFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
+r.learnFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
+
+r.learnFormula("&derivate:(x,x)", "1", kw);
+r.learnFormula("&pow:(x,1)", "x", kw);
+node ans = r.TransformationalQuery(n, kw);
+
+ans.show_condensed();
+System.out.println(ans.infix());
+System.out.println(ans.dfs2());
+
+case 8:	derivate of exp
+
+node n =new node("&derivate:(&exp:(2*x),x)");
+ArrayList<String> kw = new ArrayList<String>();
+r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
+r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
+r.learnFormula("a+0","a", kw);
+r.learnFormula("a*1","a", kw);
+r.learnFormula("&derivate:(&pow:(u,a),x)", "a*&pow:(u,a-1)*&derivate:(u,x)", kw);
+r.learnFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
+r.learnFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
+
+r.learnFormula("&derivate:(x,x)", "1", kw);
+r.learnFormula("&pow:(x,1)", "x", kw);
+node ans = r.TransformationalQuery(n, kw);
+
+ans.show_condensed();
+System.out.println(ans.infix());
+System.out.println(ans.dfs2());
+
+case 9: exp and stock 
+
+		node n =new node("&exp:(4)");
+		
+		
+		ArrayList<String> kw = new ArrayList<String>();
+		
+		r.learnFormulaStatic("stock = call-put+strike*&exp(-r)");
+		r.learnFormulaStatic("strike = (put-call+stock)*&exp(r)");
+		r.learnFormulaStatic("call = strike*&exp(-r)-put-stock");
+		r.learnFormulaStatic("put = strike*&exp(-r)-call-stock");
+		r.learnFormula("&exp:(1)", "2.71828",kw);
+		r.learnFormula("&exp:(n)", "2.71828*&exp:(n-1)",kw);
+		node ans = r.TransformationalQuery(n, kw);
+		
+		ans.show_condensed();
+		System.out.println(ans.infix());
+		System.out.println(ans.dfs2());
+
+case 10: exp with knowledge
+
+ArrayList<String> kw = new ArrayList<String>();
+		
+		r.learnFormula("&exp:(1)", "2.71828",kw);
+		r.learnFormula("&exp:(n)", "2.71828*&exp:( n - 1)",kw);
+		r.learnFormulaStatic("ans = &exp:(n)");
+		
+		ArrayList<String> GivenVar = new ArrayList<String>();
+		GivenVar.add("n");
+		ArrayList<String> GivenValues = new ArrayList<String>();
+		GivenValues.add("4");
+		ArrayList<String> ToFind = new ArrayList<String>();
+		ToFind.add("ans");
+		
+		ArrayList<String> Ans = r.KnowledgeQuery(GivenVar, GivenValues, ToFind);
+		
+		ArrayList<String> Steps = new ArrayList<String>();
+		
+		r.PrintSteps(Steps);
+		
+		for(String str: Steps)
+		{
+			System.out.println(str);
+		
+case 11: new exp
+
+	ArrayList<String> kw = new ArrayList<String>();
+		
+		r.learnFormula("&exp:(n)", "2.71828^n",kw);
+		r.learnFormulaStatic("ans = &exp:(n)");
+		
+		ArrayList<String> GivenVar = new ArrayList<String>();
+		GivenVar.add("n");
+		ArrayList<String> GivenValues = new ArrayList<String>();
+		GivenValues.add("4");
+		ArrayList<String> ToFind = new ArrayList<String>();
+		ToFind.add("ans");
+		
+		ArrayList<String> Ans = r.KnowledgeQuery(GivenVar, GivenValues, ToFind);
+		
+		ArrayList<String> Steps = new ArrayList<String>();
+		
+		r.PrintSteps(Steps);
+		
+		for(String str: Steps)
+		{
+			System.out.println(str);
+		}
+	
+case 12: asad wala derivative testing
+
+node n =new node("&derivate:(x^2,x)");
+		ArrayList<String> kw = new ArrayList<String>();
+		r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
+		r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
+		r.learnFormula("a+0","a", kw);
+		r.learnFormula("a*1","a", kw);
+		r.learnFormula("a*0","0", kw);
+		r.learnFormula("&derivate:(&pow:(u,a),x)", "a*&pow:(u,a-1)*&derivate:(u,x)", kw);
+		r.learnFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
+		r.learnFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
+		r.learnFormula("&derivate:(#,x)", "0", kw);
+		
+		r.learnFormula("&derivate:(x,x)", "1", kw);
+		r.learnFormula("&pow:(x,1)", "x", kw);
+		
+		r.learnFormulaStatic("m = &derivate:(fx, x)");
+		r.learnFormulaStatic("y = m*(x-x1)+y1");
+		
+		ArrayList<String> GivenVars = new ArrayList<String>();
+		GivenVars.add("fx");
+		GivenVars.add("x1");
+		GivenVars.add("y1");
+		GivenVars.add("x");
+		
+		ArrayList<String> GivenValues = new ArrayList<String>();
+		GivenValues.add("&pow:(x,2)+1");
+		GivenValues.add("2");
+		GivenValues.add("5");
+		GivenValues.add("x");
+		
+		ArrayList<String> ToFind = new ArrayList<String>();
+		ToFind.add("y");
+		
+		ArrayList<String> ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
+		
+		ArrayList<String> st = new ArrayList<String>();
+		
+		r.PrintSteps(st);
+		
+		for(String str: st )
+			System.out.println(str);
+		
+		GivenVars.clear();
+		GivenValues.clear();
+		ToFind.clear();
+		
+		GivenVars.add("x");
+		GivenValues.add("3");
+		r.learnFormulaStatic("ans = "+ans.get(0));
+		ToFind.add("ans");
+		
+		ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
+		
+		
+		r.PrintSteps(st);
+		
+		for(String str: st )
+			System.out.println(str);
+		
