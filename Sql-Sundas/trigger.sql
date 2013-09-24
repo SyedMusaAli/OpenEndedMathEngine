@@ -1,6 +1,6 @@
 Create or Replace trigger ChangeMonitor
 before insert on CourseAllocation
-Referencing old as o and new as n
+Referencing old as o new as n
 For each row
 declare
 
