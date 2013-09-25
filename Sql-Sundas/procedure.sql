@@ -7,10 +7,25 @@ BEGIN
 
 for v_c in c_tab loop
 
-update CourseAllocation
-set v_c.columnName = v_c.old_value
-where StudId = v_c.StudId and SemesterID = v_c.SemesterID and CourseID = v_c.CourseID;
-
+   if(v_c.columnName = 'SecNo') then
+      update CourseAllocation set SecNo = v_c.old_value where StudId = v_c.StudId and SemesterID = v_c.SemesterID and CourseID = v_c.CourseID;
+   end if;
+   
+   if(v_c.columnName = 'BNo') then
+      update CourseAllocation set BNo = v_c.old_value where StudId = v_c.StudId and SemesterID = v_c.SemesterID and CourseID = v_c.CourseID;
+   end if;
+   
+   if(v_c.columnName = 'RoomNo') then
+      update CourseAllocation set RoomNo = v_c.old_value where StudId = v_c.StudId and SemesterID = v_c.SemesterID and CourseID = v_c.CourseID;
+   end if;
+   
+   if(v_c.columnName = 'Marks') then
+      update CourseAllocation set Marks = v_c.old_value where StudId = v_c.StudId and SemesterID = v_c.SemesterID and CourseID = v_c.CourseID;
+   end if;
+   
+   if(v_c.columnName = 'LGrade') then
+      update CourseAllocation set LGrade = v_c.old_value where StudId = v_c.StudId and SemesterID = v_c.SemesterID and CourseID = v_c.CourseID;
+   end if;
 end loop;
 
 END;
