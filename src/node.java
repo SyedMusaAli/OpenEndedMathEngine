@@ -55,6 +55,8 @@ public class node {
 				switch(ch)
 				{
 					case '+':
+						if(i==0)
+                                                        break;
 						String temp1 = given.substring(0, i);
 						String temp2 = given.substring(i+1, given.length());
 						left = new node(temp1);
