@@ -1,5 +1,3 @@
-import java.awt.List;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,7 +15,7 @@ public class Excelfile {
 public void evaluate(String fname) throws IOException
 {
 
-	reasoner r = reasoner.instance();
+	ProceduralReasoner r = ProceduralReasoner.instance();
 	
 	ArrayList<Integer> tofindindex=new ArrayList<Integer>();
 	ArrayList<String> tofind=new ArrayList<String>();
@@ -104,7 +102,7 @@ public void evaluate(String fname) throws IOException
 	      wb.write(fos);
 		
 	//	System.out.println(n.infix());
-		//formula_static f=new formula_static(formula.get(0));
+		//StaticFormula f=new StaticFormula(DynamicFormula.get(0));
 		
 	}
 }

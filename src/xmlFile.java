@@ -78,15 +78,15 @@ public class xmlFile {
 		  System.out.println("Information of all "+ tag);
 
 		  for (int i = 0; i < nodeLst.getLength(); i++) {
-		    Node fstNode = nodeLst.item(i);
+		    NodeBean fstNode = nodeLst.item(i);
 		    
-		    if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+		    if (fstNode.getNodeType() == NodeBean.ELEMENT_NODE) {
 		  
 		           Element fstElmnt = (Element) fstNode;
 		      NodeList fstNmElmntLst = fstElmnt.getElementsByTagName("known");
 		      Element fstNmElmnt = (Element) fstNmElmntLst.item(0);
 		      NodeList fstNm = fstNmElmnt.getChildNodes();
-		      System.out.println("First Name : "  + ((Node) fstNm.item(0)).getNodeValue());
+		      System.out.println("First Name : "  + ((NodeBean) fstNm.item(0)).getNodeValue());
 		    }
 		    }*/
 

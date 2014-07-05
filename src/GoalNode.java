@@ -5,10 +5,10 @@ public class GoalNode {
 		
 	public String tag;
 	public ArrayList<GoalNode> subgoal=new ArrayList<GoalNode>();
-	public plan chosenPlan;
+	public PlanBean chosenPlan;
 	public boolean achieved;
 	public String Answer;
-	public ArrayList<plan> APL = new ArrayList<plan>();
+	public ArrayList<PlanBean> APL = new ArrayList<PlanBean>();
 	
 	GoalNode(String str)
 	{

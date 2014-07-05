@@ -1,30 +1,30 @@
 import java.util.ArrayList;
 
-public class reasoner {
-		ArrayList<formula> KB;
-		Node exp;
-		ArrayList<formula> AFL;
+public class ProceduralReasoner {
+		ArrayList<DynamicFormula> KB;
+		NodeBean exp;
+		ArrayList<DynamicFormula> AFL;
 		ArrayList<String> steps;
 		FileWriter1 fw;
 		ArrayList<GoalNode> TopLevelGoals = new ArrayList<GoalNode>();
 		ArrayList<String> Known;
 		ArrayList<String> KnownValues;
-		ArrayList<formula_static> KB2;
+		ArrayList<StaticFormula> KB2;
 		
-		private static final reasoner inst = new reasoner();
+		private static final ProceduralReasoner inst = new ProceduralReasoner();
 		
-		public static reasoner instance()
+		public static ProceduralReasoner instance()
 		{
 			return inst;
 		}
 				
-		private reasoner()
+		private ProceduralReasoner()
 		{
 			//TODO: make provision to load kb from file 
-			KB = new ArrayList<formula>();
-			KB2 = new ArrayList<formula_static>();
+			KB = new ArrayList<DynamicFormula>();
+			KB2 = new ArrayList<StaticFormula>();
 			steps = new ArrayList<String>();
-			AFL = new ArrayList<formula>();
+			AFL = new ArrayList<DynamicFormula>();
 			Known = new ArrayList<String>();
 			KnownValues = new ArrayList<String>();
 			//fw=new FileWriter1("kb.txt");
@@ -33,12 +33,12 @@ public class reasoner {
 		
 		public void learnFormula(String state1, String state2, ArrayList<String> kw)
 		{
-			KB.add(new formula(state1, state2, kw));
+			KB.add(new DynamicFormula(state1, state2, kw));
 		}
 		
 		public void learnFormulaStatic(String str)
 		{
-			KB2.add(new formula_static(str));
+			KB2.add(new StaticFormula(str));
 		}
 		
 		String getKnown(String var)
@@ -46,7 +46,7 @@ public class reasoner {
 			return KnownValues.get( Known.indexOf(var) );
 		}
 		
-		public Node TransformationalQuery(Node n, ArrayList<String> kw)
+		public NodeBean TransformationalQuery(NodeBean n, ArrayList<String> kw)
 		{
 			exp = n;
 			steps.clear();
@@ -57,7 +57,7 @@ public class reasoner {
 				steps.add(exp.infix());
 				int max = 0;
 
-                for (formula aKB : KB) {
+                for (DynamicFormula aKB : KB) {
                     if (aKB.q_simplify(exp))        //if it is applicable
                     {
                         int matches = 0;
@@ -70,7 +70,7 @@ public class reasoner {
                         }
                         //		System.out.println(KB.get(i).isRecursive());
                         if (aKB.isRecursive()) {
-                            AFL.add(aKB);            //add recursive formula at end (least priority)
+                            AFL.add(aKB);            //add recursive DynamicFormula at end (least priority)
                         } else if (matches >= max)        //if max keyword matches (best option)
                         {
                             AFL.add(0, aKB);        //insert at first position
@@ -80,7 +80,7 @@ public class reasoner {
                     }
                 }
 				
-				//apply best match formula
+				//apply best match DynamicFormula
 				if(AFL.size() > 0)
 				{
 					exp = AFL.get(0).simplify(exp);
@@ -97,7 +97,7 @@ public class reasoner {
 		//TODO: make destructor which saves KB in file
 		
 		
-		boolean usableFormulaStatic(formula_static f)		//can we use this formula?
+		boolean usableFormulaStatic(StaticFormula f)		//can we use this DynamicFormula?
 		{
 			for(String l: f.Reqs)							//do we know all the reqs?
 			{
@@ -107,28 +107,28 @@ public class reasoner {
 			return true;
 		}
 		
-		void replaceKnown(Node n)				//put in known values
+		void replaceKnown(NodeBean n)				//put in known values
 		{
 			if(Known.contains(n.data))			//if the data is known,
 			{
 				//get index of the variable in Known, and replace with corresponding KnownValue
-				Node t = new Node(KnownValues.get(Known.indexOf(n.data)));
+				NodeBean t = new NodeBean(KnownValues.get(Known.indexOf(n.data)));
 				n.data = t.data;
 				n.child.addAll(t.child);
 			}
-			for(Node a: n.child)
+			for(NodeBean a: n.child)
 			{
 				replaceKnown(a);
 			}
 		}
 		
-		void evaluate(formula_static f)			//evaluate formula to add result to known
+		void evaluate(StaticFormula f)			//evaluate DynamicFormula to add result to known
 		{
 			if(!usableFormulaStatic(f))
 			{
 				return;
 			}
-			Node temp = new Node(f.RHS);		//make temporary copy of formula
+			NodeBean temp = new NodeBean(f.RHS);		//make temporary copy of DynamicFormula
 			replaceKnown(temp);					//put in known values
 			Known.add(f.Result);	
 			//add result to our knowledge base
@@ -169,7 +169,7 @@ public class reasoner {
 			return Answers;
 		}
 		
-		int unknown(formula_static f)		//number of unknown reqs
+		int unknown(StaticFormula f)		//number of unknown reqs
 		{
 			int count = 0;
 			for(String r: f.Reqs)
@@ -204,7 +204,7 @@ public class reasoner {
 				PrintSteps(g2,solSteps);
 			}
 			System.out.println( g.chosenPlan.action.formulaStr);
-			Node temp = new Node(g.chosenPlan.action.RHS );
+			NodeBean temp = new NodeBean(g.chosenPlan.action.RHS );
 			replaceKnown(temp);
 			solSteps.add("= "+ temp.infix());
 			solSteps.add("= "+ getKnown(g.tag));
@@ -216,18 +216,18 @@ public class reasoner {
 		void Achieve(GoalNode g)
 		{
 			
-			for(formula_static f: KB2)
+			for(StaticFormula f: KB2)
 			{
 				if(usableFormulaStatic(f) && f.Result.equals(g.tag))	//if perfect, apply
 				{
-					g.chosenPlan = new plan(f);
+					g.chosenPlan = new PlanBean(f);
 					evaluate(f);
 					g.achieved = true;
 					return;
 				}
 				else if(f.Result.equals(g.tag))		//add applicable plans to APL
 				{
-					g.APL.add(new plan(f));
+					g.APL.add(new PlanBean(f));
 				}
 			}
 			 
@@ -241,7 +241,7 @@ public class reasoner {
 						min = j;
 					}
 				}
-				plan temp = g.APL.get(min);			//swapping
+				PlanBean temp = g.APL.get(min);			//swapping
 				g.APL.set(min, g.APL.get(i));
 				g.APL.set(i, temp);
 			}
@@ -251,7 +251,7 @@ public class reasoner {
 			int depth = 0;
 			while(!g.achieved)			//try APL with increasing depth
 			{
-				for(plan p : g.APL)
+				for(PlanBean p : g.APL)
 				{
 					if(tryPlan(p, depth))
 					{
@@ -264,12 +264,12 @@ public class reasoner {
 			}
 		}
 		
-		boolean tryPlan(plan p, int depth)		//try plan within given depth
+		boolean tryPlan(PlanBean p, int depth)		//try PlanBean within given depth
 		{
 			if(depth < 0)						
 				return false;
 			
-			if(usableFormulaStatic(p.action))		//if all reqs are known, apply formula
+			if(usableFormulaStatic(p.action))		//if all reqs are known, apply DynamicFormula
 			{
 				evaluate(p.action);
 				return true;
@@ -313,18 +313,18 @@ public class reasoner {
 			
 			if(g.APL.size() == 0)
 			{
-				for(formula_static f: KB2)
+				for(StaticFormula f: KB2)
 				{
 					if(usableFormulaStatic(f) && f.Result.equals(g.tag))	//if perfect, apply
 					{
-						g.chosenPlan = new plan(f);
+						g.chosenPlan = new PlanBean(f);
 						evaluate(f);
 						g.achieved = true;
 						return true;
 					}
 					else if(f.Result.equals(g.tag))		//add applicable plans to APL
 					{
-						g.APL.add(new plan(f));
+						g.APL.add(new PlanBean(f));
 					}
 				}
 			}
@@ -339,12 +339,12 @@ public class reasoner {
 						min = j;
 					}
 				}
-				plan temp = g.APL.get(min);			//swapping
+				PlanBean temp = g.APL.get(min);			//swapping
 				g.APL.set(min, g.APL.get(i));
 				g.APL.set(i, temp);
 			}
 			
-			for(plan p : g.APL)
+			for(PlanBean p : g.APL)
 			{
 				if(tryPlan(p, depth-1))
 				{

@@ -1,20 +1,20 @@
 import java.util.ArrayList;
 
-public class formula {
-	Node state1, state2;
-	Node match_node;
+public class DynamicFormula {
+	NodeBean state1, state2;
+	NodeBean match_node;
 	
 	String str;
 	
-	private ArrayList<Node> matches;
+	private ArrayList<NodeBean> matches;
 	private ArrayList<String> leafNodes;
 	
 	public ArrayList<String> keywords;
 	
-	formula(String st1, String st2)
+	DynamicFormula(String st1, String st2)
 	{
-		state1 = new Node(st1);
-		state2 = new Node(st2);
+		state1 = new NodeBean(st1);
+		state2 = new NodeBean(st2);
 		keywords = new ArrayList<String>();
 		
 		str = st1+" = "+st2;
@@ -23,13 +23,13 @@ public class formula {
 		state2.condense();
 		
 		leafNodes = new ArrayList<String>();
-		matches = new ArrayList<Node>();
+		matches = new ArrayList<NodeBean>();
 	}
 	
-	formula(String st1, String st2, ArrayList<String> kw)
+	DynamicFormula(String st1, String st2, ArrayList<String> kw)
 	{
-		state1 = new Node(st1);
-		state2 = new Node(st2);
+		state1 = new NodeBean(st1);
+		state2 = new NodeBean(st2);
 		keywords = kw;
 		
 		str = st1+" = "+st2;
@@ -38,10 +38,10 @@ public class formula {
 		state2.condense();
 		
 		leafNodes = new ArrayList<String>();
-		matches = new ArrayList<Node>();
+		matches = new ArrayList<NodeBean>();
 	}
 	
-	public boolean q_simplify(Node exp)
+	public boolean q_simplify(NodeBean exp)
 	{
 		exp.clearMarks();
 		leafNodes.clear();
@@ -49,14 +49,14 @@ public class formula {
         return substruct(exp, state1);
 	}
 	
-	public boolean q_expand(Node exp)
+	public boolean q_expand(NodeBean exp)
 	{
         return substruct(exp, state2);
 	}
 	
 	
 	/*
-	private Node match_returnnode(Node a, Node n)	//checks if n is the sub-structure of a
+	private NodeBean match_returnnode(NodeBean a, NodeBean n)	//checks if n is the sub-structure of a
 	{
 		if(structMatch(a,n))	//if their structures are same, then n is the sub-structure of a
 			return a;
@@ -64,7 +64,7 @@ public class formula {
 		{
 			for(int i = 0; i<a.child.size(); ++i)	
 			{
-				Node temp=match_returnnode(a.child.get(i) , n);
+				NodeBean temp=match_returnnode(a.child.get(i) , n);
 				if(temp != null)  		//if a and n aren't equal, check substruct with all children of a 
 					return  temp;
 			}
@@ -72,9 +72,9 @@ public class formula {
 		}
 	}*/
 	 
-	private ArrayList<Node> unused_simplify(Node a)
+	private ArrayList<NodeBean> unused_simplify(NodeBean a)
 	{
-		ArrayList<Node> ret= new ArrayList<Node>();
+		ArrayList<NodeBean> ret= new ArrayList<NodeBean>();
 		
 		for(int i = 0; i<a.child.size(); i++)
 		{
@@ -86,27 +86,27 @@ public class formula {
 		
 	}
 	
-	 public Node simplify(Node n)
+	 public NodeBean simplify(NodeBean n)
 	 {
 		 leafNodes.clear();
 		 matches.clear();
 		 n.clearMarks();
 		 
-		 if(!q_simplify(n))			//if it can not be simplified with this formula, return as it is
+		 if(!q_simplify(n))			//if it can not be simplified with this DynamicFormula, return as it is
 		 	return n;
 		 	
-		 Node target = match_node;		//get Node where the match is found
+		 NodeBean target = match_node;		//get NodeBean where the match is found
 		 
 		 if( target.equals(n) )			//if match was found at root
 		 {
-			 Node ret = new Node(state2);			//take other state
+			 NodeBean ret = new NodeBean(state2);			//take other state
 			 put_in_vals(ret);			//put the values of this variables in it
 			 
-			 ArrayList<Node> temp = unused_simplify(target);		//make a list of unused children
+			 ArrayList<NodeBean> temp = unused_simplify(target);		//make a list of unused children
 			 
 			 if(state2.data.equals(n.data) || temp.size() == 0)			//if new root operator is same as old, merge em
 			 {
-                 for (Node aTemp : temp) {
+                 for (NodeBean aTemp : temp) {
                      ret.child.add(aTemp);            //make all unused children, the children of ret
                  }
 				 
@@ -116,10 +116,10 @@ public class formula {
 			 }
 			 else								//otherwise, make new root a children of the old
 			 {
-				 Node ret2 = new Node();
+				 NodeBean ret2 = new NodeBean();
 				 ret2.data = n.data;
 				 ret2.child.add(ret);
-                 for (Node aTemp : temp) {
+                 for (NodeBean aTemp : temp) {
                      ret2.child.add(aTemp);            //make all unused children, the children of ret
                  }
 				 ret2.simplifySolve();			//apply simplifySolve() before returning
@@ -129,17 +129,17 @@ public class formula {
 		 }
 		 else
 		 {
-			 Node p_targ = find_parent(n, target);
+			 NodeBean p_targ = find_parent(n, target);
 			 for(int j = 0; j<p_targ.child.size(); j++)			//loop through parent's kids
 			 {
 				  if(p_targ.child.get(j).equals(target))	//find target
 				  {
-					  ArrayList<Node> temp = unused_simplify(target);
+					  ArrayList<NodeBean> temp = unused_simplify(target);
 					  
-					  p_targ.child.set(j, new Node(state2));
+					  p_targ.child.set(j, new NodeBean(state2));
 					  put_in_vals(p_targ.child.get(j));
 
-                      for (Node aTemp : temp) {
+                      for (NodeBean aTemp : temp) {
                           p_targ.child.get(j).child.add(aTemp);
                       }
 				      n.simplifySolve();
@@ -155,7 +155,7 @@ public class formula {
 	 
 	 
 	 
-	 public void put_in_vals(Node a)
+	 public void put_in_vals(NodeBean a)
 	 {
 		if( a.child.size() == 0 )
 		{
@@ -192,7 +192,7 @@ public class formula {
 		}
 	 }
 	 
-	 public Node find_parent(Node a, Node n)
+	 public NodeBean find_parent(NodeBean a, NodeBean n)
 	 {
 		 if(a.equals(n)) 
 			 return null;
@@ -204,7 +204,7 @@ public class formula {
 					 return a;
 				 else
 				  {
-					 Node ret = find_parent(a.child.get(i), n);
+					 NodeBean ret = find_parent(a.child.get(i), n);
 					 if( ret!= null )
 						 return ret;
 				  }
@@ -216,7 +216,7 @@ public class formula {
 	
 	
 	
-	public boolean substruct(Node a, Node n)	//checks if n is the sub-structure of a
+	public boolean substruct(NodeBean a, NodeBean n)	//checks if n is the sub-structure of a
 	{	
 		if(structMatch(a, n))	//if their structures are same, then n is the sub-structure of a
 		{
@@ -234,7 +234,7 @@ public class formula {
 		}
 	}
 	
-	private boolean structMatch(Node a, Node n)		//used on root of n. allows n to have less child then a
+	private boolean structMatch(NodeBean a, NodeBean n)		//used on root of n. allows n to have less child then a
 	{
 		leafNodes.clear();
 		matches.clear();
@@ -264,7 +264,7 @@ public class formula {
 			return func_match(a,n);
 		}
 		
-		//TODO: can a childless Node reach here??
+		//TODO: can a childless NodeBean reach here??
 		
 		boolean[] used = new boolean[a.child.size()];		//array of checks against each child of a
 		boolean found;
@@ -338,12 +338,12 @@ public class formula {
 					{
 						for(int k =0; k< leafNodes.size(); k++)		//loop through list of associated leaves
 						{
-							if( leafNodes.get(k).equals( n.child.get(i).data ) )		//found current n Node in our list
+							if( leafNodes.get(k).equals( n.child.get(i).data ) )		//found current n NodeBean in our list
 							{
-								exists = true;								//n's Node already has an association
+								exists = true;								//n's NodeBean already has an association
 								if( matches.get(k).equals(a.child.get(j)) )
 								{
-									valid = true;							//current 'a' Node same as previous association
+									valid = true;							//current 'a' NodeBean same as previous association
 									break;
 								}
 							}
@@ -376,7 +376,7 @@ public class formula {
 		return true;
 	}
 	
-	private boolean func_match(Node a, Node n)
+	private boolean func_match(NodeBean a, NodeBean n)
 	{
 		if(n.isConstant())	//for constants, value must match
 		{
@@ -400,7 +400,7 @@ public class formula {
 		}
 		
 		
-		//TODO: think: can a childless Node reach here??
+		//TODO: think: can a childless NodeBean reach here??
 		//current answer: No, cuz only structMatch calls this, and only on non-leaf nodes
 		
 		for(int i = 0; i<n.child.size(); ++i)		//loops through children, focusing on non-leaves
@@ -427,12 +427,12 @@ public class formula {
 				boolean valid = false, exists = false;
 				for(int k =0; k< leafNodes.size(); k++)		//loop through list of associated leaves
 				{
-					if( leafNodes.get(k).equals( n.child.get(i).data ) )		//found current n Node in our list
+					if( leafNodes.get(k).equals( n.child.get(i).data ) )		//found current n NodeBean in our list
 					{
-						exists = true;								//n's Node already has an association
+						exists = true;								//n's NodeBean already has an association
 						if( matches.get(k).equals(a.child.get(i)) )
 						{
-							valid = true;							//current 'a' Node same as previous association
+							valid = true;							//current 'a' NodeBean same as previous association
 							break;
 						}
 					}
@@ -465,7 +465,7 @@ public class formula {
 		return true;
 	}
 	
-	private boolean ch_structmatch(Node a, Node n)		//used on child of n. requires an exact struct match (children shud be equal)
+	private boolean ch_structmatch(NodeBean a, NodeBean n)		//used on child of n. requires an exact struct match (children shud be equal)
 	{
 		if(n.isConstant())	//for constants, value must match
 		{
@@ -492,7 +492,7 @@ public class formula {
 		{
 			return func_match(a,n);
 		}
-		//TODO: think: can a childless Node reach here??
+		//TODO: think: can a childless NodeBean reach here??
 		//current answer: No, cuz only structMatch calls this, and only on non-leaf nodes
 		
 		boolean[] used = new boolean[a.child.size()];		//TODO: consider using an int index to store matches of n's children with a's children
@@ -501,7 +501,7 @@ public class formula {
 		for(int i = 0; i<n.child.size(); ++i)		//loops through children, focusing on non-leaves
 		{			
 			
-			if(n.child.get(i).child.size() == 0)		//skip leaves for now. first match formula structures with exp structures
+			if(n.child.get(i).child.size() == 0)		//skip leaves for now. first match DynamicFormula structures with exp structures
 				continue;
 			
 			found = false;
@@ -536,12 +536,12 @@ public class formula {
 					boolean valid = false, exists = false;
 					for(int k =0; k< leafNodes.size(); k++)		//loop through list of associated leaves
 					{
-						if( leafNodes.get(k).equals( n.child.get(i).data ) )		//found current n Node in our list
+						if( leafNodes.get(k).equals( n.child.get(i).data ) )		//found current n NodeBean in our list
 						{
-							exists = true;								//n's Node already has an association
+							exists = true;								//n's NodeBean already has an association
 							if( matches.get(k).equals(a.child.get(j)) )
 							{
-								valid = true;							//current 'a' Node same as previous association
+								valid = true;							//current 'a' NodeBean same as previous association
 								break;
 							}
 						}

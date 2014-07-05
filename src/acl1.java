@@ -9,13 +9,13 @@ public class acl1 {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		reasoner r = reasoner.instance();
+		ProceduralReasoner r = ProceduralReasoner.instance();
 		//xmlFile xml=new xmlFile("kbtest.xml");
 		//Excelfile xfile=new Excelfile();
 		
-	//	Node n =new Node("(&exp:(x*2.0))*((x*0.0)+2.0)");
+	//	NodeBean n =new NodeBean("(&exp:(x*2.0))*((x*0.0)+2.0)");
 		
-		Node n =new Node("&derivate:(x^2,x)");
+		NodeBean n =new NodeBean("&derivate:(x^2,x)");
 		ArrayList<String> kw = new ArrayList<String>();
 		r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
 		r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
@@ -80,7 +80,7 @@ public class acl1 {
 		for(String str: st )
 			System.out.println(str);
 		
-		//Node ans = r.TransformationalQuery(n, kw);
+		//NodeBean ans = r.TransformationalQuery(n, kw);
 
 /*		ans.show_condensed();
 		System.out.println(ans.infix());
@@ -92,10 +92,10 @@ public class acl1 {
 		}
 		
 		/*
-		xml.xmlWrite(f.formulaStr, "formula");
-		xml.xmlWrite(f2.formulaStr, "formula");
+		xml.xmlWrite(f.formulaStr, "DynamicFormula");
+		xml.xmlWrite(f2.formulaStr, "DynamicFormula");
 		xml.xSave();
-		xml.xmlRead("kbtest.xml", "formula");
+		xml.xmlRead("kbtest.xml", "DynamicFormula");
 		*/
 		
 	}
