@@ -12,7 +12,7 @@ public class GoalNode {
 	
 	GoalNode(String str)
 	{
-		tag = new String(str);
+		tag = str;
 		Answer = null;
 		achieved = false;
 	}

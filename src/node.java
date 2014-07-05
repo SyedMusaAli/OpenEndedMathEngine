@@ -21,7 +21,7 @@ public class node {
 	
 	public node(node n)
 	{
-		data =  new String(n.data);
+		data = n.data;
 		child = new ArrayList<node>();
 		for(int i = 0; i<n.child.size(); i++)
 		{
@@ -165,8 +165,7 @@ public class node {
 			right = new node(temp);
 			data = "-";
 		}
-	
-		//TODO: modify this loop for function calls using : operator
+
 		for(int i = 0; i  < given.length() && !found; i++)
 		{
 			char ch = given.charAt(i);
@@ -182,7 +181,7 @@ public class node {
 						isFunc = true;
 						String temp1 = given.substring(0, i);
 						String temp2 = given.substring(i+1, given.length());
-						data = new String(temp1);
+						data = temp1;
 						ArrayList<String> parameters = parameterSplit(bracketless(temp2));
 						for(String str: parameters)
 						{
@@ -262,10 +261,9 @@ public class node {
 	void clearMarks()
 	{
 		marked = false;
-		for(int i = 0; i<child.size();i++)
-		{
-			child.get(i).clearMarks();
-		}
+        for (node aChild : child) {
+            aChild.clearMarks();
+        }
 	}
 	
 	public String dfs()
@@ -278,15 +276,14 @@ public class node {
 			return data;
 	}
 	
-	public String dfs2()
+	public String DisplayDepthFirst()
 	{
 		if(child.size() > 0)
 		{
 			String str = data+"(";
-			for(int i =0; i<child.size(); i++)
-			{
-				str+=child.get(i).dfs2()+" ";
-			}
+            for (node aChild : child) {
+                str += aChild.DisplayDepthFirst() + " ";
+            }
 			return str+")";			
 		}
 		else
@@ -332,7 +329,7 @@ public class node {
 			return data;
 	}
 	
-	public void simplify_solve()			//simplifies all solvable child nodes
+	public void simplifySolve()			//simplifies all solvable child nodes
 	{
 		if(child.size() == 0)				//leaf nodes would be values, so no simplification needed 
 		{
@@ -352,11 +349,10 @@ public class node {
 		}
 		catch(NumberFormatException e)				//if not solvable
 		{
-			for(int i = 0; i<child.size(); i++)		//for every child
-			{
-				child.get(i).simplify_solve();		//recursion
-				child.get(i).solveFlexible();
-			}
+            for (node aChild : child) {
+                aChild.simplifySolve();        //recursion
+                aChild.solveFlexible();
+            }
 			solveFlexible();
 			return;
 		}
@@ -369,7 +365,7 @@ public class node {
 	{
 		if(data.length() == 0)
 			return;
-		double ans, l, r;
+		double ans;
 		boolean modified = false;
 		
 		switch( data.charAt(0) )
@@ -422,19 +418,17 @@ public class node {
 		{
 		case '+':
 			ans= 0;
-			for(int i = 0; i<child.size(); i++)		//sum the "solve()" of all child (recursion)  
-			{
-				ans += child.get(i).solve();
-			}
+            for (node aChild : child) {
+                ans += aChild.solve();
+            }
 			return ans;
 		case '-':
 			return -1*child.get(0).solve();			//return the negative of child's value		
 		case '*':
 			ans= 1;
-			for(int i = 0; i<child.size(); i++)		//product of all child's solve	  
-			{
-				ans *= child.get(i).solve();
-			}
+            for (node aChild : child) {
+                ans *= aChild.solve();
+            }
 			return ans;
 		case '/':
 			l = child.get(0).solve();
@@ -502,29 +496,7 @@ public class node {
 		}
 		return s;
 	}
-	//TODO: Musa
-	/*
-	MathMethod(String given)
-	{
-		if(given.charAt(0) == '(')
-			return given;
-		for(int i = 0; i<given.length(); i++)
-		{
-			switch(given.charAt(i))
-			{
-				case '+':
-				case '-':
-				case '*':
-				case '/':
-					return given;
-				case '('
-				{
-					
-				}
-			}
-		}
-	}*/
-	
+
 	private boolean condensed;
 	
 	public void condense()
@@ -668,11 +640,10 @@ public class node {
 				return true;
 		else
 		{
-			for(int i = 0; i<child.size(); ++i)
-			{
-				if( child.get(i).sub(n) )
-					return true;
-			}
+            for (node aChild : child) {
+                if (aChild.sub(n))
+                    return true;
+            }
 			return false;
 		}
 	}

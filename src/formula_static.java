@@ -10,7 +10,7 @@ public class formula_static {
 	
 	public formula_static(String str)
 	{
-		formulaStr = new String(str);
+		formulaStr = str;
 		Result = str.substring(0, str.indexOf('='));
 		Result = Result.trim();
 		RHS = new node(str.substring(str.indexOf('=')+1).trim());
@@ -19,8 +19,8 @@ public class formula_static {
 	
 	public formula_static(formula_static f)
 	{
-		formulaStr = new String(f.formulaStr);
-		Result = new String(f.Result);
+		formulaStr = f.formulaStr;
+		Result = f.Result;
 		RHS = new node(f.RHS.infix());
 		Reqs = new ArrayList<String>(f.Reqs);
 	}

@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class reasoner {
@@ -57,47 +56,40 @@ public class reasoner {
 				AFL.clear();
 				steps.add(exp.infix());
 				int max = 0;
-				
-				for(int i = 0; i<KB.size(); i++)
-				{
-					if(KB.get(i).q_simplify(exp))		//if it is applicable
-					{
-						int matches = 0;
-						for(int j=0; j< kw.size(); j++)		//count how many keywords match for this formula
-						{
-							for(int k=0; k<KB.get(i).keywords.size(); k++)
-							{
-								if(kw.get(j).equals(KB.get(i).keywords.get(k)) )
-								{
-									matches++;
-								}
-							}
-						}
-				//		System.out.println(KB.get(i).isRecursive());
-						if(KB.get(i).isRecursive())
-						{
-							AFL.add(KB.get(i));			//add recursive formula at end (least priority)
-						}
-						else if(matches>=max)		//if max keyword matches (best option)
-						{
-							AFL.add(0, KB.get(i));		//insert at first position
-							max = matches;				//update max
-						}
-						else
-							AFL.add(KB.get(i));			//else insert at end
-					}
-				}
+
+                for (formula aKB : KB) {
+                    if (aKB.q_simplify(exp))        //if it is applicable
+                    {
+                        int matches = 0;
+                        for (String aKw : kw) {
+                            for (int k = 0; k < aKB.keywords.size(); k++) {
+                                if (aKw.equals(aKB.keywords.get(k))) {
+                                    matches++;
+                                }
+                            }
+                        }
+                        //		System.out.println(KB.get(i).isRecursive());
+                        if (aKB.isRecursive()) {
+                            AFL.add(aKB);            //add recursive formula at end (least priority)
+                        } else if (matches >= max)        //if max keyword matches (best option)
+                        {
+                            AFL.add(0, aKB);        //insert at first position
+                            max = matches;                //update max
+                        } else
+                            AFL.add(aKB);            //else insert at end
+                    }
+                }
 				
 				//apply best match formula
 				if(AFL.size() > 0)
 				{
 					exp = AFL.get(0).simplify(exp);
-					System.out.println(exp.dfs2());
+					System.out.println(exp.DisplayDepthFirst());
 				}
 			//	System.out.println(exp.infix());
 			}while(AFL.size() > 0);
 			
-			exp.simplify_solve();
+			exp.simplifySolve();
 			return exp;
 		}
 		
@@ -120,7 +112,7 @@ public class reasoner {
 			if(Known.contains(n.data))			//if the data is known,
 			{
 				//get index of the variable in Known, and replace with corresponding KnownValue
-				node t = new node(new String( KnownValues.get(Known.indexOf(n.data)) ));		
+				node t = new node(KnownValues.get(Known.indexOf(n.data)));
 				n.data = t.data;
 				n.child.addAll(t.child);
 			}
@@ -361,11 +353,8 @@ public class reasoner {
 					break;
 				}
 			}
-			
-			if(g.achieved)
-				return true;
-			else
-				return false;
+
+            return g.achieved;
 		}
 		
 		public void rSaveKB(String list, String s)

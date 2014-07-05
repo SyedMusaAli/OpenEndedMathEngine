@@ -84,7 +84,7 @@ public class acl1 {
 
 /*		ans.show_condensed();
 		System.out.println(ans.infix());
-		System.out.println(ans.dfs2());
+		System.out.println(ans.DisplayDepthFirst());
 	
 		for(String str: r.steps)
 		{

@@ -46,29 +46,19 @@ public class formula {
 		exp.clearMarks();
 		leafNodes.clear();
 		matches.clear();
-		if( substruct(exp, state1))
-		{
-			return true;
-		}
-		else
-			return false;
+        return substruct(exp, state1);
 	}
 	
 	public boolean q_expand(node exp)
 	{
-		if( substruct(exp, state2))
-		{
-			return true;
-		}
-		else
-			return false;
+        return substruct(exp, state2);
 	}
 	
 	
 	/*
 	private node match_returnnode(node a, node n)	//checks if n is the sub-structure of a
 	{
-		if(structmatch(a,n))	//if their structures are same, then n is the sub-structure of a
+		if(structMatch(a,n))	//if their structures are same, then n is the sub-structure of a
 			return a;
 		else
 		{
@@ -116,12 +106,11 @@ public class formula {
 			 
 			 if(state2.data.equals(n.data) || temp.size() == 0)			//if new root operator is same as old, merge em
 			 {
-				 for(int i = 0; i<temp.size(); i++)
-				 {
-					 ret.child.add( temp.get(i) );			//make all unused children, the children of ret
-				 }
+                 for (node aTemp : temp) {
+                     ret.child.add(aTemp);            //make all unused children, the children of ret
+                 }
 				 
-				 ret.simplify_solve();			//apply simplify_solve() before returning
+				 ret.simplifySolve();			//apply simplifySolve() before returning
 				 ret.condense();
 				 return ret;
 			 }
@@ -130,11 +119,10 @@ public class formula {
 				 node ret2 = new node();
 				 ret2.data = n.data;
 				 ret2.child.add(ret);
-				 for(int i = 0; i<temp.size();i++)
-				 {
-					 ret2.child.add( temp.get(i) );			//make all unused children, the children of ret
-				 }
-				 ret2.simplify_solve();			//apply simplify_solve() before returning
+                 for (node aTemp : temp) {
+                     ret2.child.add(aTemp);            //make all unused children, the children of ret
+                 }
+				 ret2.simplifySolve();			//apply simplifySolve() before returning
 				 ret2.condense();
 				 return ret2;
 			 }
@@ -150,18 +138,17 @@ public class formula {
 					  
 					  p_targ.child.set(j, new node(state2));
 					  put_in_vals(p_targ.child.get(j));
-					  
-					 for(int i = 0; i<temp.size(); i++)
-					 {
-						 p_targ.child.get(j).child.add( temp.get(i) );
-					 }
-				      n.simplify_solve();
+
+                      for (node aTemp : temp) {
+                          p_targ.child.get(j).child.add(aTemp);
+                      }
+				      n.simplifySolve();
 				      n.condense();
 				      return n;
 				  }
 			 }
 		 }
-		 n.simplify_solve();
+		 n.simplifySolve();
 		 n.condense();
 		 return n;
 	 }
@@ -231,7 +218,7 @@ public class formula {
 	
 	public boolean substruct(node a, node n)	//checks if n is the sub-structure of a
 	{	
-		if(structmatch(a,n))	//if their structures are same, then n is the sub-structure of a
+		if(structMatch(a, n))	//if their structures are same, then n is the sub-structure of a
 		{
 			match_node = a;
 			return true;
@@ -247,7 +234,7 @@ public class formula {
 		}
 	}
 	
-	private boolean structmatch(node a, node n)		//used on root of n. allows n to have less child then a
+	private boolean structMatch(node a, node n)		//used on root of n. allows n to have less child then a
 	{
 		leafNodes.clear();
 		matches.clear();
@@ -255,22 +242,19 @@ public class formula {
 		{
 			if(!a.isConstant())
 				return false;
-			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structmatch
+			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
 					return false;
 		}
 		else if(n.data.charAt(0) == '#')
 		{
-			if(a.isConstant())
-				return true;
-			else 
-				return false;
+            return a.isConstant();
 		}
 		else if(n.data.charAt(0) == '&')
 		{
 			if(!n.data.equals(a.data))
 				return false;
 		}
-		else if( !a.data.equals(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structmatch
+		else if( !a.data.equals(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
 		{
 			return false;
 		}
@@ -287,7 +271,7 @@ public class formula {
 		
 		for(int i = 0; i<n.child.size(); ++i)		//for every child of n, find a match in children of a
 		{	
-			if(n.child.get(i).child.size() == 0)		//no need to call structmatch on leaf nodes (leaves have no structure)
+			if(n.child.get(i).child.size() == 0)		//no need to call structMatch on leaf nodes (leaves have no structure)
 				continue;
 			
 			found = false; 
@@ -398,15 +382,12 @@ public class formula {
 		{
 			if(!a.isConstant())
 				return false;
-			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structmatch
+			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
 					return false;
 		}
 		else if(n.data.charAt(0) == '#')
 		{
-			if(a.isConstant())
-				return true;
-			else 
-				return false;
+            return a.isConstant();
 		}
 		else if(n.data.charAt(0) == '&')
 		{
@@ -420,7 +401,7 @@ public class formula {
 		
 		
 		//TODO: think: can a childless node reach here??
-		//current answer: No, cuz only structmatch calls this, and only on non-leaf nodes
+		//current answer: No, cuz only structMatch calls this, and only on non-leaf nodes
 		
 		for(int i = 0; i<n.child.size(); ++i)		//loops through children, focusing on non-leaves
 		{			
@@ -430,15 +411,12 @@ public class formula {
 				{
 					if(!a.child.get(i).isConstant())
 							return false;
-					if( Double.parseDouble(a.child.get(i).data) != Double.parseDouble(n.child.get(i).data) || a.child.get(i).child.size() < n.child.get(i).child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structmatch
+					if( Double.parseDouble(a.child.get(i).data) != Double.parseDouble(n.child.get(i).data) || a.child.get(i).child.size() < n.child.get(i).child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
 							return false;
 				}
 				else if(n.child.get(i).data.charAt(0) == '#')
 				{
-					if(a.child.get(i).isConstant())
-						return true;
-					else 
-						return false;
+                    return a.child.get(i).isConstant();
 				}
 				else if(n.child.get(i).data.charAt(0) == '&')
 				{
@@ -493,15 +471,12 @@ public class formula {
 		{
 			if(!a.isConstant())
 				return false;
-			if( Double.parseDouble(a.data) != Double.parseDouble(n.data))		//if operator doesn't match, or if child sizes don't match. obviously not a structmatch
+			if( Double.parseDouble(a.data) != Double.parseDouble(n.data))		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
 					return false;
 		}
 		else if(n.data.charAt(0) == '#')
 		{
-			if(a.isConstant())
-				return true;
-			else 
-				return false;
+            return a.isConstant();
 		}
 		else if(n.data.charAt(0) == '&')
 		{
@@ -518,7 +493,7 @@ public class formula {
 			return func_match(a,n);
 		}
 		//TODO: think: can a childless node reach here??
-		//current answer: No, cuz only structmatch calls this, and only on non-leaf nodes
+		//current answer: No, cuz only structMatch calls this, and only on non-leaf nodes
 		
 		boolean[] used = new boolean[a.child.size()];		//TODO: consider using an int index to store matches of n's children with a's children
 		boolean found;
@@ -605,9 +580,6 @@ public class formula {
 		state2.clearMarks();
 		leafNodes.clear();
 		matches.clear();
-		if(substruct(state2, state1))
-			return true;
-		else
-			return false;
+        return substruct(state2, state1);
 	}
 }
