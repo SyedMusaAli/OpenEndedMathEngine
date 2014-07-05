@@ -215,4 +215,5 @@ pip-log.txt
 .mr.developer.cfg
 .idea/.name
 *.xml
+*.class
 OpenEndedMathEngine.iml
