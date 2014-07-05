@@ -13,7 +13,7 @@ public class StaticFormula {
 		formulaStr = str;
 		Result = str.substring(0, str.indexOf('='));
 		Result = Result.trim();
-		RHS = new NodeBean(str.substring(str.indexOf('=')+1).trim());
+		RHS = Parser.parse(str.substring(str.indexOf('=')+1).trim());
 		Reqs = RHS.getLeaves();
 	}
 	
@@ -21,7 +21,7 @@ public class StaticFormula {
 	{
 		formulaStr = f.formulaStr;
 		Result = f.Result;
-		RHS = new NodeBean(f.RHS.infix());
+		RHS = Parser.parse(f.RHS.infix());
 		Reqs = new ArrayList<String>(f.Reqs);
 	}
 	

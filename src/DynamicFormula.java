@@ -13,14 +13,14 @@ public class DynamicFormula {
 	
 	DynamicFormula(String st1, String st2)
 	{
-		state1 = new NodeBean(st1);
-		state2 = new NodeBean(st2);
+		state1 = Parser.parse(st1);
+		state2 = Parser.parse(st2);
 		keywords = new ArrayList<String>();
 		
 		str = st1+" = "+st2;
 		
-		state1.condense();
-		state2.condense();
+		Parser.condense(state1);
+		Parser.condense(state2);
 		
 		leafNodes = new ArrayList<String>();
 		matches = new ArrayList<NodeBean>();
@@ -28,14 +28,14 @@ public class DynamicFormula {
 	
 	DynamicFormula(String st1, String st2, ArrayList<String> kw)
 	{
-		state1 = new NodeBean(st1);
-		state2 = new NodeBean(st2);
+		state1 = Parser.parse(st1);
+		state2 = Parser.parse(st2);
 		keywords = kw;
 		
 		str = st1+" = "+st2;
-		
-		state1.condense();
-		state2.condense();
+
+        Parser.condense(state1);
+        Parser.condense(state2);
 		
 		leafNodes = new ArrayList<String>();
 		matches = new ArrayList<NodeBean>();
@@ -110,8 +110,8 @@ public class DynamicFormula {
                      ret.child.add(aTemp);            //make all unused children, the children of ret
                  }
 				 
-				 ret.simplifySolve();			//apply simplifySolve() before returning
-				 ret.condense();
+				 ExpressionSolver.simplifySolve(ret);			//apply simplifySolve() before returning
+				 Parser.condense(ret);
 				 return ret;
 			 }
 			 else								//otherwise, make new root a children of the old
@@ -122,8 +122,8 @@ public class DynamicFormula {
                  for (NodeBean aTemp : temp) {
                      ret2.child.add(aTemp);            //make all unused children, the children of ret
                  }
-				 ret2.simplifySolve();			//apply simplifySolve() before returning
-				 ret2.condense();
+				 ExpressionSolver.simplifySolve(ret2);			//apply simplifySolve() before returning
+				 Parser.condense(ret2);
 				 return ret2;
 			 }
 		 }
@@ -142,14 +142,14 @@ public class DynamicFormula {
                       for (NodeBean aTemp : temp) {
                           p_targ.child.get(j).child.add(aTemp);
                       }
-				      n.simplifySolve();
-				      n.condense();
+				      ExpressionSolver.simplifySolve(n);
+				      Parser.condense(n);
 				      return n;
 				  }
 			 }
 		 }
-		 n.simplifySolve();
-		 n.condense();
+		 ExpressionSolver.simplifySolve(n);
+		 Parser.condense(n);
 		 return n;
 	 }
 	 

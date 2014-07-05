@@ -89,7 +89,7 @@ public class ProceduralReasoner {
 			//	System.out.println(exp.infix());
 			}while(AFL.size() > 0);
 			
-			exp.simplifySolve();
+			ExpressionSolver.simplifySolve(exp);
 			return exp;
 		}
 		
@@ -112,7 +112,7 @@ public class ProceduralReasoner {
 			if(Known.contains(n.data))			//if the data is known,
 			{
 				//get index of the variable in Known, and replace with corresponding KnownValue
-				NodeBean t = new NodeBean(KnownValues.get(Known.indexOf(n.data)));
+				NodeBean t = Parser.parse(KnownValues.get(Known.indexOf(n.data)));
 				n.data = t.data;
 				n.child.addAll(t.child);
 			}

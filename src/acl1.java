@@ -15,7 +15,7 @@ public class acl1 {
 		
 	//	NodeBean n =new NodeBean("(&exp:(x*2.0))*((x*0.0)+2.0)");
 		
-		NodeBean n =new NodeBean("&derivate:(x^2,x)");
+		NodeBean n =Parser.parse("&derivate:(x^2,x)");
 		ArrayList<String> kw = new ArrayList<String>();
 		r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
 		r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);

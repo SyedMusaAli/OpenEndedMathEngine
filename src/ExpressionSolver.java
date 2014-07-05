@@ -7,7 +7,7 @@
  */
 public class ExpressionSolver {
 
-    public double solve(NodeBean node)			//TODO: make for (x/y)/(a/d)
+    public static double solve(NodeBean node)			//TODO: make for (x/y)/(a/d)
     {
         if(node.data.length() == 0)
             return 0;
@@ -44,7 +44,7 @@ public class ExpressionSolver {
         }
     }
 
-    public void simplifySolve(NodeBean node)			//simplifies all solvable child nodes
+    public static void simplifySolve(NodeBean node)			//simplifies all solvable child nodes
     {
         if(node.child.size() == 0)				//leaf nodes would be values, so no simplification needed
         {
@@ -76,7 +76,7 @@ public class ExpressionSolver {
         node.child.clear();							//empty child array
     }
 
-    public void solveFlexible(NodeBean node)			//TODO: make for (x/y)/(a/d)
+    public static void solveFlexible(NodeBean node)			//TODO: make for (x/y)/(a/d)
     {
         if(node.data.length() == 0)
             return;
@@ -101,7 +101,7 @@ public class ExpressionSolver {
                     }
                 }
                 if(modified)
-                    node.child.add(new NodeBean( Double.toString(ans)));
+                    node.child.add(Parser.parse( Double.toString(ans)));
             case '*':
                 ans= 1;
                 for(int i = 0; i<node.child.size();)		//sum the "solve()" of all child (recursion)
@@ -118,7 +118,7 @@ public class ExpressionSolver {
                     }
                 }
                 if(modified)
-                    node.child.add(new NodeBean( Double.toString(ans)));
+                    node.child.add(Parser.parse( Double.toString(ans)));
         }
     }
 
