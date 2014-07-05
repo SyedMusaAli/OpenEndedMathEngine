@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class reasoner {
 		ArrayList<formula> KB;
-		node exp;
+		Node exp;
 		ArrayList<formula> AFL;
 		ArrayList<String> steps;
 		FileWriter1 fw;
@@ -46,7 +46,7 @@ public class reasoner {
 			return KnownValues.get( Known.indexOf(var) );
 		}
 		
-		public node TransformationalQuery(node n, ArrayList<String> kw)
+		public Node TransformationalQuery(Node n, ArrayList<String> kw)
 		{
 			exp = n;
 			steps.clear();
@@ -107,16 +107,16 @@ public class reasoner {
 			return true;
 		}
 		
-		void replaceKnown(node n)				//put in known values
+		void replaceKnown(Node n)				//put in known values
 		{
 			if(Known.contains(n.data))			//if the data is known,
 			{
 				//get index of the variable in Known, and replace with corresponding KnownValue
-				node t = new node(KnownValues.get(Known.indexOf(n.data)));
+				Node t = new Node(KnownValues.get(Known.indexOf(n.data)));
 				n.data = t.data;
 				n.child.addAll(t.child);
 			}
-			for(node a: n.child)
+			for(Node a: n.child)
 			{
 				replaceKnown(a);
 			}
@@ -128,7 +128,7 @@ public class reasoner {
 			{
 				return;
 			}
-			node temp = new node(f.RHS);		//make temporary copy of formula
+			Node temp = new Node(f.RHS);		//make temporary copy of formula
 			replaceKnown(temp);					//put in known values
 			Known.add(f.Result);	
 			//add result to our knowledge base
@@ -204,7 +204,7 @@ public class reasoner {
 				PrintSteps(g2,solSteps);
 			}
 			System.out.println( g.chosenPlan.action.formulaStr);
-			node temp = new node(g.chosenPlan.action.RHS );
+			Node temp = new Node(g.chosenPlan.action.RHS );
 			replaceKnown(temp);
 			solSteps.add("= "+ temp.infix());
 			solSteps.add("= "+ getKnown(g.tag));
