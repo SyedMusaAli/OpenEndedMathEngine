@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 
 public class StaticFormula {
-	public NodeBean RHS;
+	public Node RHS;
 	public String Result;
 	public ArrayList<String> Reqs;
 	public String formulaStr;

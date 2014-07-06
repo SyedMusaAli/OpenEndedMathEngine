@@ -1,31 +1,30 @@
-import java.util.ArrayList; 
-import java.lang.Math;
+import java.util.ArrayList;
 
 
-public class NodeBean {
+public class Node {
 	
 	public String data;
-	public NodeBean right, left;
-	public ArrayList<NodeBean> child;
+	public Node right, left;
+	public ArrayList<Node> child;
 	boolean marked;
 	public boolean isFunc;
 	
-	public NodeBean()
+	public Node()
 	{
 		right = null;
 		left = null;
-		child = new ArrayList<NodeBean>();
+		child = new ArrayList<Node>();
 		marked = false;
 		isFunc = false;
 	}
 	
-	public NodeBean(NodeBean n)
+	public Node(Node n)
 	{
 		data = n.data;
-		child = new ArrayList<NodeBean>();
+		child = new ArrayList<Node>();
 		for(int i = 0; i<n.child.size(); i++)
 		{
-			child.add(new NodeBean(n.child.get(i)));
+			child.add(new Node(n.child.get(i)));
 		}
 		marked = false;
 		isFunc = n.isFunc;
@@ -50,7 +49,7 @@ public class NodeBean {
 		}
 		else
 		{
-			for(NodeBean n : child)
+			for(Node n : child)
 			{
 				lev.addAll(n.getLeaves());
 			}
@@ -74,7 +73,7 @@ public class NodeBean {
 	void clearMarks()
 	{
 		marked = false;
-        for (NodeBean aChild : child) {
+        for (Node aChild : child) {
             aChild.clearMarks();
         }
 	}
@@ -94,7 +93,7 @@ public class NodeBean {
 		if(child.size() > 0)
 		{
 			String str = data+"(";
-            for (NodeBean aChild : child) {
+            for (Node aChild : child) {
                 str += aChild.DisplayDepthFirst() + " ";
             }
 			return str+")";			
@@ -153,15 +152,15 @@ public class NodeBean {
 		if(!condensed)
 			Parser.condense(this);
 		System.out.println(data+" ("+child.size()+")");
-		for(NodeBean n: child)
+		for(Node n: child)
 		{
 			n.show_condensed();
 		}
 		if(child.size() > 0)
-			System.out.println("end of NodeBean");
+			System.out.println("end of Node");
 	}
 	
-	public boolean equals(NodeBean n)
+	public boolean equals(Node n)
 	{
 		Parser.condense(this);
 		Parser.condense(n);
@@ -195,7 +194,7 @@ public class NodeBean {
 		
 	}
 	
-	private boolean sequals(NodeBean n)
+	private boolean sequals(Node n)
 	{
 		Parser.condense(this);
 		Parser.condense(n);
@@ -229,13 +228,13 @@ public class NodeBean {
 		
 	}
 	
-	public boolean sub(NodeBean n)
+	public boolean sub(Node n)
 	{
 		if(sequals(n))
 				return true;
 		else
 		{
-            for (NodeBean aChild : child) {
+            for (Node aChild : child) {
                 if (aChild.sub(n))
                     return true;
             }

@@ -1,7 +1,7 @@
 
 import java.util.ArrayList;
 
-public class acl1 {
+public class MainClass {
 
 	/**
 	 * @param args
@@ -13,9 +13,9 @@ public class acl1 {
 		//xmlFile xml=new xmlFile("kbtest.xml");
 		//Excelfile xfile=new Excelfile();
 		
-	//	NodeBean n =new NodeBean("(&exp:(x*2.0))*((x*0.0)+2.0)");
+	//	Node n =new Node("(&exp:(x*2.0))*((x*0.0)+2.0)");
 		
-		NodeBean n =Parser.parse("&derivate:(x^2,x)");
+		Node n =Parser.parse("&derivate:(x^2,x)");
 		ArrayList<String> kw = new ArrayList<String>();
 		r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
 		r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
@@ -80,7 +80,7 @@ public class acl1 {
 		for(String str: st )
 			System.out.println(str);
 		
-		//NodeBean ans = r.TransformationalQuery(n, kw);
+		//Node ans = r.TransformationalQuery(n, kw);
 
 /*		ans.show_condensed();
 		System.out.println(ans.infix());

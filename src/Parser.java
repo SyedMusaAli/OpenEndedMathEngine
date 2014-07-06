@@ -9,10 +9,10 @@ import java.util.ArrayList;
  */
 public class Parser {
 
-    public static NodeBean parse(String given)
+    public static Node parse(String given)
     {
-        NodeBean node = new NodeBean();
-        node.child = new ArrayList<NodeBean>();
+        Node node = new Node();
+        node.child = new ArrayList<Node>();
         given = bracketless(given);
         node.data = new String(given);
         boolean found = false;
@@ -252,7 +252,7 @@ public class Parser {
         }
         return s;
     }
-    public static void condense(NodeBean node)
+    public static void condense(Node node)
     {
         if(node.condensed)			//return if it has been condensed before
             return;
@@ -262,7 +262,7 @@ public class Parser {
         if(node.data.charAt(0) != '&')		//exception for specials
         {
 
-            NodeBean temp = node;
+            Node temp = node;
             if(temp.left != null)		//if there exists something on the left, that'll be the first child.
                 node.child.add(node.left);
 
@@ -274,19 +274,19 @@ public class Parser {
                 //ASSUMPTION: there won't be anything like 1/2/3
                 //TODO: make it for (x/y)/(a/d)
 
-                if(temp.right!=null)			//iterate through all node.right NodeBean who have the same operator, and gather their nodes in child.
+                if(temp.right!=null)			//iterate through all node.right Node who have the same operator, and gather their nodes in child.
                 {
                     while(temp.right.data.equals(node.data) )
                     {
                         temp = temp.right;			//keep moving node.right
-                        node.child.add(temp.left);		//keep adding node.left NodeBean to child
+                        node.child.add(temp.left);		//keep adding node.left Node to child
                     }
-                    node.child.add(temp.right);				//when u reach last NodeBean of this operator type. add the node.right to child
+                    node.child.add(temp.right);				//when u reach last Node of this operator type. add the node.right to child
                 }
 
                 for( int i = 0; i < node.child.size();)		//iterate thorough the number of children
                 {
-                    NodeBean n = node.child.get(i);              //get ith child
+                    Node n = node.child.get(i);              //get ith child
                     if(n.data.equals(node.data) )            //same operator
                     {
                         node.child.add(i,n.left);            //keep adding the same operator operands of node.left and node.right
@@ -300,7 +300,7 @@ public class Parser {
         }
 
         //condense each child of it
-        for(NodeBean n: node.child)
+        for(Node n: node.child)
         {
             condense(n);
         }

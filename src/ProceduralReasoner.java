@@ -2,11 +2,11 @@ import java.util.ArrayList;
 
 public class ProceduralReasoner {
 		ArrayList<DynamicFormula> KB;
-		NodeBean exp;
+		Node exp;
 		ArrayList<DynamicFormula> AFL;
 		ArrayList<String> steps;
 		FileWriter1 fw;
-		ArrayList<GoalNode> TopLevelGoals = new ArrayList<GoalNode>();
+		ArrayList<Goal> TopLevelGoals = new ArrayList<Goal>();
 		ArrayList<String> Known;
 		ArrayList<String> KnownValues;
 		ArrayList<StaticFormula> KB2;
@@ -46,7 +46,7 @@ public class ProceduralReasoner {
 			return KnownValues.get( Known.indexOf(var) );
 		}
 		
-		public NodeBean TransformationalQuery(NodeBean n, ArrayList<String> kw)
+		public Node TransformationalQuery(Node n, ArrayList<String> kw)
 		{
 			exp = n;
 			steps.clear();
@@ -89,7 +89,7 @@ public class ProceduralReasoner {
 			//	System.out.println(exp.infix());
 			}while(AFL.size() > 0);
 			
-			ExpressionSolver.simplifySolve(exp);
+			ArithmeticSolver.simplifySolve(exp);
 			return exp;
 		}
 		
@@ -107,16 +107,16 @@ public class ProceduralReasoner {
 			return true;
 		}
 		
-		void replaceKnown(NodeBean n)				//put in known values
+		void replaceKnown(Node n)				//put in known values
 		{
 			if(Known.contains(n.data))			//if the data is known,
 			{
 				//get index of the variable in Known, and replace with corresponding KnownValue
-				NodeBean t = Parser.parse(KnownValues.get(Known.indexOf(n.data)));
+				Node t = Parser.parse(KnownValues.get(Known.indexOf(n.data)));
 				n.data = t.data;
 				n.child.addAll(t.child);
 			}
-			for(NodeBean a: n.child)
+			for(Node a: n.child)
 			{
 				replaceKnown(a);
 			}
@@ -128,7 +128,7 @@ public class ProceduralReasoner {
 			{
 				return;
 			}
-			NodeBean temp = new NodeBean(f.RHS);		//make temporary copy of DynamicFormula
+			Node temp = new Node(f.RHS);		//make temporary copy of DynamicFormula
 			replaceKnown(temp);					//put in known values
 			Known.add(f.Result);	
 			//add result to our knowledge base
@@ -153,13 +153,13 @@ public class ProceduralReasoner {
 			TopLevelGoals.clear();
 			for(String str: ToFind)
 			{
-				TopLevelGoals.add( new GoalNode(str));
+				TopLevelGoals.add( new Goal(str));
 			}
 			
 			ArrayList<String> Answers = new ArrayList<String>();
 			
 			
-			for(GoalNode g: TopLevelGoals)
+			for(Goal g: TopLevelGoals)
 			{
 				Achieve(g);
 				Answers.add( KnownValues.get(Known.indexOf(g.tag)) );
@@ -182,7 +182,7 @@ public class ProceduralReasoner {
 		
 		public void PrintSteps(ArrayList<String> solSteps)
 		{
-			for(GoalNode g: TopLevelGoals)
+			for(Goal g: TopLevelGoals)
 			{
 				PrintSteps(g,solSteps);
 			}
@@ -190,21 +190,21 @@ public class ProceduralReasoner {
 		
 		public void PrintSteps(String str, ArrayList<String> solSteps)
 		{
-			for(GoalNode g: TopLevelGoals)
+			for(Goal g: TopLevelGoals)
 			{
 				if(str.equals(g.tag))
 					PrintSteps(g,solSteps);
 			}
 		}
 		
-		private void PrintSteps(GoalNode g, ArrayList<String> solSteps)
+		private void PrintSteps(Goal g, ArrayList<String> solSteps)
 		{
-			for( GoalNode g2: g.chosenPlan.subgoals)
+			for( Goal g2: g.chosenPlan.subgoals)
 			{
 				PrintSteps(g2,solSteps);
 			}
 			System.out.println( g.chosenPlan.action.formulaStr);
-			NodeBean temp = new NodeBean(g.chosenPlan.action.RHS );
+			Node temp = new Node(g.chosenPlan.action.RHS );
 			replaceKnown(temp);
 			solSteps.add("= "+ temp.infix());
 			solSteps.add("= "+ getKnown(g.tag));
@@ -213,21 +213,21 @@ public class ProceduralReasoner {
 		
 		
 		
-		void Achieve(GoalNode g)
+		void Achieve(Goal g)
 		{
 			
 			for(StaticFormula f: KB2)
 			{
 				if(usableFormulaStatic(f) && f.Result.equals(g.tag))	//if perfect, apply
 				{
-					g.chosenPlan = new PlanBean(f);
+					g.chosenPlan = new Plan(f);
 					evaluate(f);
 					g.achieved = true;
 					return;
 				}
 				else if(f.Result.equals(g.tag))		//add applicable plans to APL
 				{
-					g.APL.add(new PlanBean(f));
+					g.APL.add(new Plan(f));
 				}
 			}
 			 
@@ -241,7 +241,7 @@ public class ProceduralReasoner {
 						min = j;
 					}
 				}
-				PlanBean temp = g.APL.get(min);			//swapping
+				Plan temp = g.APL.get(min);			//swapping
 				g.APL.set(min, g.APL.get(i));
 				g.APL.set(i, temp);
 			}
@@ -251,7 +251,7 @@ public class ProceduralReasoner {
 			int depth = 0;
 			while(!g.achieved)			//try APL with increasing depth
 			{
-				for(PlanBean p : g.APL)
+				for(Plan p : g.APL)
 				{
 					if(tryPlan(p, depth))
 					{
@@ -264,7 +264,7 @@ public class ProceduralReasoner {
 			}
 		}
 		
-		boolean tryPlan(PlanBean p, int depth)		//try PlanBean within given depth
+		boolean tryPlan(Plan p, int depth)		//try Plan within given depth
 		{
 			if(depth < 0)						
 				return false;
@@ -282,13 +282,13 @@ public class ProceduralReasoner {
 					{
 						if(!Known.contains(r))
 						{
-							p.subgoals.add(new GoalNode(r));
+							p.subgoals.add(new Goal(r));
 						}
 					}
 				}
 				
 				int achieved = 0;					//counts how many achieved
-				for(GoalNode g: p.subgoals)
+				for(Goal g: p.subgoals)
 				{
 					if(g.achieved)
 						achieved++;
@@ -306,7 +306,7 @@ public class ProceduralReasoner {
 			}
 		}
 		
-		boolean trySubGoal(GoalNode g, int depth)
+		boolean trySubGoal(Goal g, int depth)
 		{
 			if(depth < 0)
 				return false;
@@ -317,14 +317,14 @@ public class ProceduralReasoner {
 				{
 					if(usableFormulaStatic(f) && f.Result.equals(g.tag))	//if perfect, apply
 					{
-						g.chosenPlan = new PlanBean(f);
+						g.chosenPlan = new Plan(f);
 						evaluate(f);
 						g.achieved = true;
 						return true;
 					}
 					else if(f.Result.equals(g.tag))		//add applicable plans to APL
 					{
-						g.APL.add(new PlanBean(f));
+						g.APL.add(new Plan(f));
 					}
 				}
 			}
@@ -339,12 +339,12 @@ public class ProceduralReasoner {
 						min = j;
 					}
 				}
-				PlanBean temp = g.APL.get(min);			//swapping
+				Plan temp = g.APL.get(min);			//swapping
 				g.APL.set(min, g.APL.get(i));
 				g.APL.set(i, temp);
 			}
 			
-			for(PlanBean p : g.APL)
+			for(Plan p : g.APL)
 			{
 				if(tryPlan(p, depth-1))
 				{

@@ -5,9 +5,9 @@
  * Time: 10:48 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ExpressionSolver {
+public class ArithmeticSolver {
 
-    public static double solve(NodeBean node)			//TODO: make for (x/y)/(a/d)
+    public static double solve(Node node)			//TODO: make for (x/y)/(a/d)
     {
         if(node.data.length() == 0)
             return 0;
@@ -18,7 +18,7 @@ public class ExpressionSolver {
         {
             case '+':
                 ans= 0;
-                for (NodeBean aChild : node.child) {
+                for (Node aChild : node.child) {
                     ans += solve(aChild);
                 }
                 return ans;
@@ -26,7 +26,7 @@ public class ExpressionSolver {
                 return -1*solve(node.child.get(0));			//return the negative of child's value
             case '*':
                 ans= 1;
-                for (NodeBean aChild : node.child) {
+                for (Node aChild : node.child) {
                     ans *= solve(aChild);
                 }
                 return ans;
@@ -44,7 +44,7 @@ public class ExpressionSolver {
         }
     }
 
-    public static void simplifySolve(NodeBean node)			//simplifies all solvable child nodes
+    public static void simplifySolve(Node node)			//simplifies all solvable child nodes
     {
         if(node.child.size() == 0)				//leaf nodes would be values, so no simplification needed
         {
@@ -64,7 +64,7 @@ public class ExpressionSolver {
         }
         catch(NumberFormatException e)				//if not solvable
         {
-            for (NodeBean aChild : node.child) {
+            for (Node aChild : node.child) {
                 simplifySolve(aChild);        //recursion
                 solveFlexible(aChild);
             }
@@ -76,7 +76,7 @@ public class ExpressionSolver {
         node.child.clear();							//empty child array
     }
 
-    public static void solveFlexible(NodeBean node)			//TODO: make for (x/y)/(a/d)
+    public static void solveFlexible(Node node)			//TODO: make for (x/y)/(a/d)
     {
         if(node.data.length() == 0)
             return;
