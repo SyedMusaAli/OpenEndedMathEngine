@@ -9,7 +9,16 @@ import java.util.ArrayList;
  */
 public class Parser {
 
-    public static Node parse(String given)
+    public static ParsedExpression parseExpression(String expression)
+    {
+        ParsedExpression obj_ParsedExpression = new ParsedExpression();
+
+        obj_ParsedExpression.rootNode = parse(expression);
+
+        return obj_ParsedExpression;
+    }
+
+    static Node parse(String given)
     {
         Node node = new Node();
         node.child = new ArrayList<Node>();
@@ -252,7 +261,8 @@ public class Parser {
         }
         return s;
     }
-    public static void condense(Node node)
+
+    static void condense(Node node)
     {
         if(node.condensed)			//return if it has been condensed before
             return;

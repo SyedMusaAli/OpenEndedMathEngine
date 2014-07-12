@@ -9,29 +9,34 @@ public class MainClass {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		ProceduralReasoner r = ProceduralReasoner.instance();
+		ProceduralReasoner r = new ProceduralReasoner();
 		//xmlFile xml=new xmlFile("kbtest.xml");
 		//Excelfile xfile=new Excelfile();
 		
 	//	Node n =new Node("(&exp:(x*2.0))*((x*0.0)+2.0)");
 		
-		Node n =Parser.parse("&derivate:(x^2,x)");
+		ParsedExpression expression =Parser.parseExpression("&derivate:(x^2,x)");
+
 		ArrayList<String> kw = new ArrayList<String>();
-		r.learnFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
-		r.learnFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
-		r.learnFormula("a+0","a", kw);
-		r.learnFormula("a*1","a", kw);
-		r.learnFormula("a*0","0", kw);
-		r.learnFormula("&derivate:(u^a,x)", "a*u^(a-1)*&derivate:(u,x)", kw);
-		r.learnFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
-		r.learnFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
-		r.learnFormula("&derivate:(#,x)", "0", kw);
+		r.learnDynamicFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
+		r.learnDynamicFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
+		r.learnDynamicFormula("a+0", "a", kw);
+		r.learnDynamicFormula("a*1", "a", kw);
+		r.learnDynamicFormula("a*0", "0", kw);
+		r.learnDynamicFormula("&derivate:(u^a,x)", "a*u^(a-1)*&derivate:(u,x)", kw);
+		r.learnDynamicFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
+		r.learnDynamicFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
+		r.learnDynamicFormula("&derivate:(#,x)", "0", kw);
 		
-		r.learnFormula("&derivate:(x,x)", "1", kw);
-		r.learnFormula("x^1", "x", kw);
-		
-		r.learnFormulaStatic("m = &derivate:(fx, x)");
-		r.learnFormulaStatic("b = m*(a-x)+y");
+		r.learnDynamicFormula("&derivate:(x,x)", "1", kw);
+		r.learnDynamicFormula("x^1", "x", kw);
+
+        ParsedExpression result = r.TransformationalQuery(expression, kw);
+
+
+
+		r.learnStaticFormula("m = &derivate:(fx, x)");
+		r.learnStaticFormula("b = m*(a-x)+y");
 		
 		ArrayList<String> GivenVars = new ArrayList<String>();
 		GivenVars.add("fx");
@@ -69,7 +74,7 @@ public class MainClass {
 		GivenValues.add("5");
 		GivenVars.add("a");
 		GivenValues.add("a");
-		//r.learnFormulaStatic("ans = "+ans.get(0));
+		//r.learnStaticFormula("ans = "+ans.get(0));
 		ToFind.add("b");
 		
 		ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);

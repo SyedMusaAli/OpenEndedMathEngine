@@ -46,26 +46,22 @@ public class DynamicFormula {
 		exp.clearMarks();
 		leafNodes.clear();
 		matches.clear();
-        return substruct(exp, state1);
+        return isSubstructure(exp, state1);
 	}
-	
-	public boolean q_expand(Node exp)
-	{
-        return substruct(exp, state2);
-	}
+
 	
 	
 	/*
 	private Node match_returnnode(Node a, Node n)	//checks if n is the sub-structure of a
 	{
-		if(structMatch(a,n))	//if their structures are same, then n is the sub-structure of a
+		if(structuralMatch(a,n))	//if their structures are same, then n is the sub-structure of a
 			return a;
 		else
 		{
 			for(int i = 0; i<a.child.size(); ++i)	
 			{
 				Node temp=match_returnnode(a.child.get(i) , n);
-				if(temp != null)  		//if a and n aren't equal, check substruct with all children of a 
+				if(temp != null)  		//if a and n aren't equal, check isSubstructure with all children of a
 					return  temp;
 			}
 			return null;
@@ -100,7 +96,7 @@ public class DynamicFormula {
 		 if( target.equals(n) )			//if match was found at root
 		 {
 			 Node ret = new Node(state2);			//take other state
-			 put_in_vals(ret);			//put the values of this variables in it
+			 substituteValues(ret);			//put the values of this variables in it
 			 
 			 ArrayList<Node> temp = unused_simplify(target);		//make a list of unused children
 			 
@@ -129,7 +125,7 @@ public class DynamicFormula {
 		 }
 		 else
 		 {
-			 Node p_targ = find_parent(n, target);
+			 Node p_targ = findParent(n, target);
 			 for(int j = 0; j<p_targ.child.size(); j++)			//loop through parent's kids
 			 {
 				  if(p_targ.child.get(j).equals(target))	//find target
@@ -137,7 +133,7 @@ public class DynamicFormula {
 					  ArrayList<Node> temp = unused_simplify(target);
 					  
 					  p_targ.child.set(j, new Node(state2));
-					  put_in_vals(p_targ.child.get(j));
+					  substituteValues(p_targ.child.get(j));
 
                       for (Node aTemp : temp) {
                           p_targ.child.get(j).child.add(aTemp);
@@ -155,7 +151,7 @@ public class DynamicFormula {
 	 
 	 
 	 
-	 public void put_in_vals(Node a)
+	 public void substituteValues(Node a)
 	 {
 		if( a.child.size() == 0 )
 		{
@@ -186,13 +182,13 @@ public class DynamicFormula {
 				}
 				if(!found)
 				{
-					put_in_vals( a.child.get(i) );
+					substituteValues(a.child.get(i));
 				}
 			}
 		}
 	 }
 	 
-	 public Node find_parent(Node a, Node n)
+	 public Node findParent(Node a, Node n)         //Finds n in a and returns parent of n
 	 {
 		 if(a.equals(n)) 
 			 return null;
@@ -204,7 +200,7 @@ public class DynamicFormula {
 					 return a;
 				 else
 				  {
-					 Node ret = find_parent(a.child.get(i), n);
+					 Node ret = findParent(a.child.get(i), n);
 					 if( ret!= null )
 						 return ret;
 				  }
@@ -216,9 +212,9 @@ public class DynamicFormula {
 	
 	
 	
-	public boolean substruct(Node a, Node n)	//checks if n is the sub-structure of a
+	public boolean isSubstructure(Node a, Node n)	//checks if n is the sub-structure of a
 	{	
-		if(structMatch(a, n))	//if their structures are same, then n is the sub-structure of a
+		if(structuralMatch(a, n))	//if their structures are same, then n is the sub-structure of a
 		{
 			match_node = a;
 			return true;
@@ -227,14 +223,14 @@ public class DynamicFormula {
 		{
 			for(int i = 0; i<a.child.size(); ++i)	
 			{
-				if( substruct(a.child.get(i) , n) )		//if a and n aren't equal, check substruct with all children of a 
+				if( isSubstructure(a.child.get(i), n) )		//if a and n aren't equal, check isSubstructure with all children of a
 					return true;
 			}
 			return false;
 		}
 	}
 	
-	private boolean structMatch(Node a, Node n)		//used on root of n. allows n to have less child then a
+	private boolean structuralMatch(Node a, Node n)		//used on root of n. allows n to have less child then a
 	{
 		leafNodes.clear();
 		matches.clear();
@@ -242,7 +238,7 @@ public class DynamicFormula {
 		{
 			if(!a.isConstant())
 				return false;
-			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
+			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structuralMatch
 					return false;
 		}
 		else if(n.data.charAt(0) == '#')
@@ -254,14 +250,14 @@ public class DynamicFormula {
 			if(!n.data.equals(a.data))
 				return false;
 		}
-		else if( !a.data.equals(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
+		else if( !a.data.equals(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structuralMatch
 		{
 			return false;
 		}
 		
 		if(n.isFunc)
 		{
-			return func_match(a,n);
+			return functionStructureMatch(a, n);
 		}
 		
 		//TODO: can a childless Node reach here??
@@ -271,7 +267,7 @@ public class DynamicFormula {
 		
 		for(int i = 0; i<n.child.size(); ++i)		//for every child of n, find a match in children of a
 		{	
-			if(n.child.get(i).child.size() == 0)		//no need to call structMatch on leaf nodes (leaves have no structure)
+			if(n.child.get(i).child.size() == 0)		//no need to call structuralMatch on leaf nodes (leaves have no structure)
 				continue;
 			
 			found = false; 
@@ -279,7 +275,7 @@ public class DynamicFormula {
 			{
 				if(!used[j])
 				{
-					if( ch_structmatch( a.child.get(j), n.child.get(i) ))	//TODO: Think later equal? sequal?
+					if( childStructuralMatch(a.child.get(j), n.child.get(i)))	//TODO: Think later equal? sequal?
 					{
 						used[j] = true;
 						a.child.get(j).marked = true;
@@ -376,13 +372,13 @@ public class DynamicFormula {
 		return true;
 	}
 	
-	private boolean func_match(Node a, Node n)
+	private boolean functionStructureMatch(Node a, Node n)
 	{
 		if(n.isConstant())	//for constants, value must match
 		{
 			if(!a.isConstant())
 				return false;
-			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
+			if( Double.parseDouble(a.data) != Double.parseDouble(n.data) || a.child.size() < n.child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structuralMatch
 					return false;
 		}
 		else if(n.data.charAt(0) == '#')
@@ -401,7 +397,7 @@ public class DynamicFormula {
 		
 		
 		//TODO: think: can a childless Node reach here??
-		//current answer: No, cuz only structMatch calls this, and only on non-leaf nodes
+		//current answer: No, cuz only structuralMatch calls this, and only on non-leaf nodes
 		
 		for(int i = 0; i<n.child.size(); ++i)		//loops through children, focusing on non-leaves
 		{			
@@ -411,7 +407,7 @@ public class DynamicFormula {
 				{
 					if(!a.child.get(i).isConstant())
 							return false;
-					if( Double.parseDouble(a.child.get(i).data) != Double.parseDouble(n.child.get(i).data) || a.child.get(i).child.size() < n.child.get(i).child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
+					if( Double.parseDouble(a.child.get(i).data) != Double.parseDouble(n.child.get(i).data) || a.child.get(i).child.size() < n.child.get(i).child.size() )		//if operator doesn't match, or if child sizes don't match. obviously not a structuralMatch
 							return false;
 				}
 				else if(n.child.get(i).data.charAt(0) == '#')
@@ -448,7 +444,7 @@ public class DynamicFormula {
 				else
 					return false;
 			}	
-			else if( !ch_structmatch(a.child.get(i), n.child.get(i) ))	//TODO: Think later equal? sequal?
+			else if( !childStructuralMatch(a.child.get(i), n.child.get(i)))	//TODO: Think later equal? sequal?
 			{
 				return false;
 			}
@@ -465,13 +461,13 @@ public class DynamicFormula {
 		return true;
 	}
 	
-	private boolean ch_structmatch(Node a, Node n)		//used on child of n. requires an exact struct match (children shud be equal)
+	private boolean childStructuralMatch(Node a, Node n)		//used on child of n. requires an exact struct match (children shud be equal)
 	{
 		if(n.isConstant())	//for constants, value must match
 		{
 			if(!a.isConstant())
 				return false;
-			if( Double.parseDouble(a.data) != Double.parseDouble(n.data))		//if operator doesn't match, or if child sizes don't match. obviously not a structMatch
+			if( Double.parseDouble(a.data) != Double.parseDouble(n.data))		//if operator doesn't match, or if child sizes don't match. obviously not a structuralMatch
 					return false;
 		}
 		else if(n.data.charAt(0) == '#')
@@ -490,10 +486,10 @@ public class DynamicFormula {
 		
 		if(n.isFunc)
 		{
-			return func_match(a,n);
+			return functionStructureMatch(a, n);
 		}
 		//TODO: think: can a childless Node reach here??
-		//current answer: No, cuz only structMatch calls this, and only on non-leaf nodes
+		//current answer: No, cuz only structuralMatch calls this, and only on non-leaf nodes
 		
 		boolean[] used = new boolean[a.child.size()];		//TODO: consider using an int index to store matches of n's children with a's children
 		boolean found;
@@ -509,7 +505,7 @@ public class DynamicFormula {
 			{
 				if(!used[j])
 				{
-					if( ch_structmatch(a.child.get(j), n.child.get(i) ))	//TODO: Think later equal? sequal?
+					if( childStructuralMatch(a.child.get(j), n.child.get(i)))	//TODO: Think later equal? sequal?
 					{
 						used[j] = true;						//mark child of a as used
 						a.child.get(j).marked = true;
@@ -580,6 +576,6 @@ public class DynamicFormula {
 		state2.clearMarks();
 		leafNodes.clear();
 		matches.clear();
-        return substruct(state2, state1);
+        return isSubstructure(state2, state1);
 	}
 }

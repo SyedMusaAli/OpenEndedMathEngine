@@ -10,15 +10,8 @@ public class ProceduralReasoner {
 		ArrayList<String> Known;
 		ArrayList<String> KnownValues;
 		ArrayList<StaticFormula> KB2;
-		
-		private static final ProceduralReasoner inst = new ProceduralReasoner();
-		
-		public static ProceduralReasoner instance()
-		{
-			return inst;
-		}
-				
-		private ProceduralReasoner()
+
+		public ProceduralReasoner()
 		{
 			//TODO: make provision to load kb from file 
 			KB = new ArrayList<DynamicFormula>();
@@ -31,12 +24,12 @@ public class ProceduralReasoner {
 		}
 		
 		
-		public void learnFormula(String state1, String state2, ArrayList<String> kw)
+		public void learnDynamicFormula(String state1, String state2, ArrayList<String> kw)
 		{
 			KB.add(new DynamicFormula(state1, state2, kw));
 		}
 		
-		public void learnFormulaStatic(String str)
+		public void learnStaticFormula(String str)
 		{
 			KB2.add(new StaticFormula(str));
 		}
@@ -46,9 +39,16 @@ public class ProceduralReasoner {
 			return KnownValues.get( Known.indexOf(var) );
 		}
 		
-		public Node TransformationalQuery(Node n, ArrayList<String> kw)
+		public ParsedExpression TransformationalQuery(ParsedExpression expression, ArrayList<String> keywords)
+        {
+            ParsedExpression result = new ParsedExpression();
+            result.rootNode = TransformationalQuery(expression.rootNode, keywords);
+            return result;
+        }
+
+        Node TransformationalQuery(Node n, ArrayList<String> kw)
 		{
-			exp = n;
+			exp = new Node(n);
 			steps.clear();
 			
 			do
