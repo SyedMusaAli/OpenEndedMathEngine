@@ -2,7 +2,7 @@ package mathengine;
 
 import java.util.ArrayList;
 
-public class Plan {
+class Plan {
 	
 	StaticFormula action;
 	ArrayList<Goal> subgoals = new ArrayList<Goal>();

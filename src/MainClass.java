@@ -1,7 +1,7 @@
 
+import mathengine.Engine;
 import mathengine.ParsedExpression;
 import mathengine.Parser;
-import mathengine.ProceduralReasoner;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public class MainClass {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		ProceduralReasoner r = new ProceduralReasoner();
+		Engine r = new Engine();
 		//xmlFile xml=new xmlFile("kbtest.xml");
 		//Excelfile xfile=new Excelfile();
 		
@@ -60,8 +60,8 @@ public class MainClass {
 		ArrayList<String> ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
 		
 		ArrayList<String> st = new ArrayList<String>();
-		
-		r.getAllSteps(st);
+
+        st = r.getAllSteps();
 		
 		for(String str: st )
 			System.out.println(str);
@@ -84,7 +84,7 @@ public class MainClass {
 		ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
 		
 		
-		r.getAllSteps(st);
+		st = r.getAllSteps();
 		
 		for(String str: st )
 			System.out.println(str);

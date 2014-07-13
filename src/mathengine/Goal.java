@@ -3,7 +3,7 @@ package mathengine;
 import java.util.ArrayList;
 
 
-public class Goal {
+class Goal {
 		
 	public String tag;
 	public ArrayList<Goal> subgoal=new ArrayList<Goal>();

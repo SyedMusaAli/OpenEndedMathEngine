@@ -7,7 +7,7 @@ package mathengine;
  * Time: 10:48 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ArithmeticSolver {
+class ArithmeticSolver {
 
     public static double solve(Node node)			//TODO: make for (x/y)/(a/d)
     {

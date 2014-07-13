@@ -3,7 +3,7 @@ package mathengine;
 import java.util.ArrayList;
 
 
-public class Node {
+class Node {
 	
 	public String data;
 	public Node right, left;

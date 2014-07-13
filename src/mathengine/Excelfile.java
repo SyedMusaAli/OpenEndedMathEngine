@@ -15,7 +15,7 @@ public class Excelfile {
 public void evaluate(String fname) throws IOException
 {
 
-	ProceduralReasoner r = ProceduralReasoner.instance();
+	Engine r = Engine.instance();
 	
 	ArrayList<Integer> tofindindex=new ArrayList<Integer>();
 	ArrayList<String> tofind=new ArrayList<String>();

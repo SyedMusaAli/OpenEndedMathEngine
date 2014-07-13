@@ -2,7 +2,7 @@ package mathengine;
 
 import java.util.ArrayList;
 
-public class ProceduralReasoner {
+public class Engine {
 		ArrayList<DynamicFormula> KB;
 		Node exp;
 		ArrayList<DynamicFormula> AFL;
@@ -13,7 +13,7 @@ public class ProceduralReasoner {
 		ArrayList<String> KnownValues;
 		ArrayList<StaticFormula> KB2;
 
-		public ProceduralReasoner()
+		public Engine()
 		{
 			//TODO: make provision to load kb from file 
 			KB = new ArrayList<DynamicFormula>();
