@@ -86,7 +86,7 @@ public void evaluate(String fname) throws IOException
 		        }    
 		      }
 		    ans = r.KnowledgeQuery(knownvar, knownval, tofind);
-		//    r.PrintSteps();
+		//    r.getAllSteps();
 		    
 		    System.out.println("solved");
 		    for(int ind = 0; ind< ans.size(); ind++)

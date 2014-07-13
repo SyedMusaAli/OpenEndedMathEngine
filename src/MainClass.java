@@ -1,4 +1,8 @@
 
+import mathengine.ParsedExpression;
+import mathengine.Parser;
+import mathengine.ProceduralReasoner;
+
 import java.util.ArrayList;
 
 public class MainClass {
@@ -15,7 +19,7 @@ public class MainClass {
 		
 	//	Node n =new Node("(&exp:(x*2.0))*((x*0.0)+2.0)");
 		
-		ParsedExpression expression =Parser.parseExpression("&derivate:(x^2,x)");
+		ParsedExpression expression = Parser.parseExpression("&derivate:(x^2,x)");
 
 		ArrayList<String> kw = new ArrayList<String>();
 		r.learnDynamicFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
@@ -57,7 +61,7 @@ public class MainClass {
 		
 		ArrayList<String> st = new ArrayList<String>();
 		
-		r.PrintSteps(st);
+		r.getAllSteps(st);
 		
 		for(String str: st )
 			System.out.println(str);
@@ -80,7 +84,7 @@ public class MainClass {
 		ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
 		
 		
-		r.PrintSteps(st);
+		r.getAllSteps(st);
 		
 		for(String str: st )
 			System.out.println(str);

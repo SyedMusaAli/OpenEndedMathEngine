@@ -1,3 +1,5 @@
+package mathengine;
+
 /**
  * User: Musa Ali
  * Date: 7/6/14
@@ -7,4 +9,13 @@
 public class ParsedExpression {
 
     Node rootNode;
+
+    @Override
+    public String toString()
+    {
+        return rootNode.infix();
+    }
+
+
+
 }

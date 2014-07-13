@@ -1,3 +1,5 @@
+package mathengine;
+
 import java.util.ArrayList;
 
 public class ProceduralReasoner {
@@ -138,7 +140,7 @@ public class ProceduralReasoner {
 		
 		
 		
-		ArrayList<String> KnowledgeQuery(ArrayList<String> GivenVars, ArrayList<String> GivenValues, ArrayList<String> ToFind)
+		public ArrayList<String> KnowledgeQuery(ArrayList<String> GivenVars, ArrayList<String> GivenValues, ArrayList<String> ToFind)
 		{
 			
 			//TODO: Make sure if not found, returns error
@@ -180,21 +182,25 @@ public class ProceduralReasoner {
 			return count;
 		}
 		
-		public void PrintSteps(ArrayList<String> solSteps)
+		public ArrayList<String> getAllSteps()
 		{
+            ArrayList<String> solSteps = new ArrayList<String>();
 			for(Goal g: TopLevelGoals)
 			{
 				PrintSteps(g,solSteps);
 			}
+            return solSteps;
 		}
 		
-		public void PrintSteps(String str, ArrayList<String> solSteps)
+		public ArrayList<String> getsStepsToCompute(String variable)
 		{
+            ArrayList<String> solSteps = new ArrayList<String>();
 			for(Goal g: TopLevelGoals)
 			{
-				if(str.equals(g.tag))
+				if(variable.equals(g.tag))
 					PrintSteps(g,solSteps);
 			}
+            return solSteps;
 		}
 		
 		private void PrintSteps(Goal g, ArrayList<String> solSteps)
@@ -203,7 +209,7 @@ public class ProceduralReasoner {
 			{
 				PrintSteps(g2,solSteps);
 			}
-			System.out.println( g.chosenPlan.action.formulaStr);
+		//	System.out.println( g.chosenPlan.action.formulaStr);
 			Node temp = new Node(g.chosenPlan.action.RHS );
 			replaceKnown(temp);
 			solSteps.add("= "+ temp.infix());
