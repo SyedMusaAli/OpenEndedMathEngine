@@ -1,5 +1,6 @@
 package mathengine;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class Engine {
@@ -367,5 +368,33 @@ public class Engine {
 		{
 			fw.SaveKB(list,s);
 		}
-	
+
+    public void loadDynamicFormulaFile(String filename) throws IOException
+    {
+        FileInputStream obj_FileInputStream = new FileInputStream(filename);
+        InputStreamReader in = new InputStreamReader(obj_FileInputStream);
+        BufferedReader reader = new BufferedReader(in);
+
+        String line;
+        while( (line = reader.readLine()) != null)
+        {
+            String[] states = line.split("=>");
+            learnDynamicFormula(states[0], states[1], new ArrayList<String>());
+        }
+    }
+
+    public void loadStaticFormulaFile(String filename) throws IOException
+    {
+        FileInputStream obj_FileInputStream = new FileInputStream(filename);
+        InputStreamReader in = new InputStreamReader(obj_FileInputStream);
+        BufferedReader reader = new BufferedReader(in);
+
+        String line;
+        while( (line = reader.readLine()) != null)
+        {
+            learnStaticFormula(line);
+        }
+    }
+
 }
+
