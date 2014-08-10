@@ -1,10 +1,8 @@
-import java.awt.List;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
+             /*
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,7 +15,7 @@ public class Excelfile {
 public void evaluate(String fname) throws IOException
 {
 
-	reasoner r = reasoner.instance();
+	Engine r = Engine.instance();
 	
 	ArrayList<Integer> tofindindex=new ArrayList<Integer>();
 	ArrayList<String> tofind=new ArrayList<String>();
@@ -64,7 +62,7 @@ public void evaluate(String fname) throws IOException
 		               key = totalCell.getStringCellValue().toString().trim();
 		
 		           }*/
-		        }
+/*		        }
 		        else if(sell.toString().contains("???"))
 		        {
 		        	//System.out.println("II"+i);
@@ -88,7 +86,7 @@ public void evaluate(String fname) throws IOException
 		        }    
 		      }
 		    ans = r.KnowledgeQuery(knownvar, knownval, tofind);
-		//    r.PrintSteps();
+		//    r.getAllSteps();
 		    
 		    System.out.println("solved");
 		    for(int ind = 0; ind< ans.size(); ind++)
@@ -104,10 +102,11 @@ public void evaluate(String fname) throws IOException
 	      wb.write(fos);
 		
 	//	System.out.println(n.infix());
-		//formula_static f=new formula_static(formula.get(0));
+		//StaticFormula f=new StaticFormula(DynamicFormula.get(0));
 		
 	}
 }
 
 
 }
+*/

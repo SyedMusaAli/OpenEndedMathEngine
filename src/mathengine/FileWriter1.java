@@ -1,3 +1,5 @@
+package mathengine;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -5,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 
-public class FileWriter1 {
+class FileWriter1 {
 	
 	public FileWriter1(String fname) throws IOException
 	{
