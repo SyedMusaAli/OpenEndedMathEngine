@@ -25,12 +25,17 @@ public class Engine {
 			KnownValues = new ArrayList<String>();
 			//fw=new FileWriter1("kb.txt");
 		}
-		
-		
-		public void learnDynamicFormula(String state1, String state2, ArrayList<String> kw)
-		{
-			KB.add(new DynamicFormula(state1, state2, kw));
-		}
+
+
+    public void learnDynamicFormula(String state1, String state2, ArrayList<String> kw)
+    {
+        KB.add(new DynamicFormula(state1, state2, kw));
+    }
+
+    public void learnDynamicFormula(String state1, String state2)
+    {
+        learnDynamicFormula(state1, state2, new ArrayList<String>());
+    }
 		
 		public void learnStaticFormula(String str)
 		{
