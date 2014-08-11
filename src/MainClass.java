@@ -1,7 +1,7 @@
 
-import mathengine.Engine;
-import mathengine.ParsedExpression;
-import mathengine.Parser;
+import mathEngine.Engine;
+import mathEngine.ParsedExpression;
+import mathEngine.Parser;
 
 import java.util.ArrayList;
 

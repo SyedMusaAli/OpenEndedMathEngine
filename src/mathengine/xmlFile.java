@@ -1,4 +1,4 @@
-package mathengine;
+package mathEngine;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

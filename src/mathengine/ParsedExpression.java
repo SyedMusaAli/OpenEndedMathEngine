@@ -1,4 +1,4 @@
-package mathengine;
+package mathEngine;
 
 /**
  * User: Musa Ali
