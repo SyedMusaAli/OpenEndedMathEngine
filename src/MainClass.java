@@ -4,6 +4,7 @@ import mathEngine.ParsedExpression;
 import mathEngine.Parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainClass {
 
@@ -42,22 +43,16 @@ public class MainClass {
 		r.learnStaticFormula("m = &derivate:(fx, x)");
 		r.learnStaticFormula("b = m*(a-x)+y");
 		
-		ArrayList<String> GivenVars = new ArrayList<String>();
-		GivenVars.add("fx");
-		GivenVars.add("x1");
-		GivenVars.add("y1");
-		GivenVars.add("x");
-		
-		ArrayList<String> GivenValues = new ArrayList<String>();
-		GivenValues.add("x^2+1");
-		GivenValues.add("2");
-		GivenValues.add("5");
-		GivenValues.add("x");
+		HashMap<String, String> GivenValues = new HashMap<String, String>();
+		GivenValues.put("fx", "x^2+1");
+		GivenValues.put("x1", "2");
+		GivenValues.put("y1", "5");
+		GivenValues.put("x", "x");
 		
 		ArrayList<String> ToFind = new ArrayList<String>();
 		ToFind.add("m");
 		
-		ArrayList<String> ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
+		ArrayList<String> ans = r.KnowledgeQuery(GivenValues, ToFind);
 		
 		ArrayList<String> st = new ArrayList<String>();
 
@@ -66,22 +61,17 @@ public class MainClass {
 		for(String str: st )
 			System.out.println(str);
 		
-		GivenVars.clear();
 		GivenValues.clear();
 		ToFind.clear();
-		
-		GivenVars.add("m");
-		GivenValues.add(ans.get(0));
-		GivenVars.add("x");
-		GivenValues.add("2");
-		GivenVars.add("y");
-		GivenValues.add("5");
-		GivenVars.add("a");
-		GivenValues.add("a");
+
+		GivenValues.put("m", ans.get(0));
+        GivenValues.put("x", "2");
+        GivenValues.put("y", "5");
+        GivenValues.put("a", "a");
 		//r.learnStaticFormula("ans = "+ans.get(0));
 		ToFind.add("b");
 		
-		ans = r.KnowledgeQuery(GivenVars, GivenValues, ToFind);
+		ans = r.KnowledgeQuery(GivenValues, ToFind);
 		
 		
 		st = r.getAllSteps();

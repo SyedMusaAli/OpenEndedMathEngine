@@ -2,6 +2,7 @@ package mathEngine;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Engine {
 		ArrayList<DynamicFormula> KB;
@@ -10,8 +11,7 @@ public class Engine {
 		ArrayList<String> steps;
 		FileWriter1 fw;
 		ArrayList<Goal> TopLevelGoals = new ArrayList<Goal>();
-		ArrayList<String> Known;
-		ArrayList<String> KnownValues;
+		HashMap<String, String> KnownValues;
 		ArrayList<StaticFormula> KB2;
 
 		public Engine()
@@ -21,15 +21,14 @@ public class Engine {
 			KB2 = new ArrayList<StaticFormula>();
 			steps = new ArrayList<String>();
 			AFL = new ArrayList<DynamicFormula>();
-			Known = new ArrayList<String>();
-			KnownValues = new ArrayList<String>();
+			KnownValues = new HashMap<String, String>();
 			//fw=new FileWriter1("kb.txt");
 		}
 
 
     public void learnDynamicFormula(String state1, String state2, ArrayList<String> kw)
     {
-        KB.add(new DynamicFormula(state1, state2, kw));
+        KB.add(new DynamicFormula(state1.trim(), state2.trim(), kw));
     }
 
     public void learnDynamicFormula(String state1, String state2)
@@ -44,7 +43,7 @@ public class Engine {
 		
 		String getKnown(String var)
 		{
-			return KnownValues.get( Known.indexOf(var) );
+			return KnownValues.get(var);
 		}
 		
 		public ParsedExpression TransformationalQuery(ParsedExpression expression, ArrayList<String> keywords)
@@ -107,9 +106,9 @@ public class Engine {
 		
 		boolean usableFormulaStatic(StaticFormula f)		//can we use this DynamicFormula?
 		{
-			for(String l: f.Reqs)							//do we know all the reqs?
+			for(String requirement: f.Reqs)							//do we know all the reqs?
 			{
-				if(!Known.contains(l))
+				if(!KnownValues.containsKey(requirement))
 					return false;
 			}
 			return true;
@@ -117,10 +116,10 @@ public class Engine {
 		
 		void replaceKnown(Node n)				//put in known values
 		{
-			if(Known.contains(n.data))			//if the data is known,
+			if(KnownValues.containsKey(n.data))			//if the data is known,
 			{
 				//get index of the variable in Known, and replace with corresponding KnownValue
-				Node t = Parser.parse(KnownValues.get(Known.indexOf(n.data)));
+				Node t = Parser.parse(KnownValues.get(n.data));
 				n.data = t.data;
 				n.child.addAll(t.child);
 			}
@@ -138,24 +137,21 @@ public class Engine {
 			}
 			Node temp = new Node(f.RHS);		//make temporary copy of DynamicFormula
 			replaceKnown(temp);					//put in known values
-			Known.add(f.Result);	
-			//add result to our knowledge base
-			ArrayList<String> kw = new ArrayList<String>();
-			KnownValues.add( TransformationalQuery(temp,kw).infix() );	
+
+            //add result to our knowledge base
+            ArrayList<String> kw = new ArrayList<String>();
+            KnownValues.put(f.Result, TransformationalQuery(temp,kw).infix() );
 		}
 		
 		
 		
-		public ArrayList<String> KnowledgeQuery(ArrayList<String> GivenVars, ArrayList<String> GivenValues, ArrayList<String> ToFind)
+		public ArrayList<String> KnowledgeQuery(HashMap<String, String> GivenValues, ArrayList<String> ToFind)
 		{
 			
 			//TODO: Make sure if not found, returns error
 			
 			steps.clear();
-			Known.clear();
-			Known.addAll(GivenVars);
-			KnownValues.clear();
-			KnownValues.addAll(GivenValues);
+			KnownValues = GivenValues;
 		//	fw.SaveKB(KB2.toArray().toString(), "kb2.txt");
 	//		fw.SaveKB(KB.toArray().toString(), "kb1.txt");
 			TopLevelGoals.clear();
@@ -170,10 +166,9 @@ public class Engine {
 			for(Goal g: TopLevelGoals)
 			{
 				Achieve(g);
-				Answers.add( KnownValues.get(Known.indexOf(g.tag)) );
+				Answers.add( KnownValues.get(g.tag) );
 			}
-			
-			
+
 			return Answers;
 		}
 		
@@ -182,7 +177,7 @@ public class Engine {
 			int count = 0;
 			for(String r: f.Reqs)
 			{
-				if(!Known.contains(r))
+				if(!KnownValues.containsKey(r))
 					count++;
 			}
 			return count;
@@ -292,7 +287,7 @@ public class Engine {
 				{
 					for(String r: p.action.Reqs)	//for each unknown, a subgoal
 					{
-						if(!Known.contains(r))
+						if(!KnownValues.containsKey(r))
 						{
 							p.subgoals.add(new Goal(r));
 						}
