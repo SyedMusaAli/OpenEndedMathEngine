@@ -12,11 +12,28 @@ To use this, create an instance of the **Engine** class:
 
     Engine myEngine = new Engine();
 
-#Algebraic Transformations
+##Algebraic Transformations
 
-Algebraic transformations (aka Dynamic Formulae) can be added adHoc:
+The engine can learn Algebraic transformations (aka Dynamic Formulae), such as the formula:
+
+    (a+b)^2 = (a^2)+(2*a*b)+(b^2)
+
+They can be added adHoc:
 
     myEngine.learnDynamicFormula("(a+b)^2", "(a^2)+(2*a*b)+(b^2)");
+
+or as part of a file of dynamic formulae:
+
+    myEngine.loadDynamicFormulaFile("basicAlgebra.txt");
+
+When adding from a file, each formula needs to be placed on a separate line. Each formula should mention the two states with the => delimieter in between. For example:
+
+    (a+b)^2 => (a^2)+(2*a*b)+(b^2)
+    a*(b+c) => a*b + a*c
+    a*0 => 0
+    a*1 => a
+    a - a => 0
+
 
   
 
