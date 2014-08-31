@@ -13,32 +13,35 @@ public class MainClass {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		
+
 		Engine r = new Engine();
 		//xmlFile xml=new xmlFile("kbtest.xml");
 		//Excelfile xfile=new Excelfile();
 		
 	//	Node n =new Node("(&exp:(x*2.0))*((x*0.0)+2.0)");
 		
-		ParsedExpression expression = Parser.parseExpression("&derivate:(x^2,x)");
+//		ParsedExpression expression = Parser.parseExpression("derivate:(x^2,x)");
+//        System.out.println(expression.toString());
 
 		ArrayList<String> kw = new ArrayList<String>();
-		r.learnDynamicFormula("&derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
-		r.learnDynamicFormula("&derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
+		//r.learnDynamicFormula("derivate:(&exp:(u),x)", "&exp:(u)*&derivate:(u,x)", kw);
+		//r.learnDynamicFormula("derivate:(&ln:(u),x)", "(1/u)*&derivate:(u,x)", kw);
 		r.learnDynamicFormula("a+0", "a", kw);
 		r.learnDynamicFormula("a*1", "a", kw);
 		r.learnDynamicFormula("a*0", "0", kw);
-		r.learnDynamicFormula("&derivate:(u^a,x)", "a*u^(a-1)*&derivate:(u,x)", kw);
-		r.learnDynamicFormula("&derivate:(u+v,x)", "&derivate:(u,x)+&derivate:(v,x)", kw);
-		r.learnDynamicFormula("&derivate:(u*v,x)", "&derivate:(u,x)*v+u*&derivate:(v,x)", kw);
-		r.learnDynamicFormula("&derivate:(#,x)", "0", kw);
+		r.learnDynamicFormula("derivate:(u^a,x)", "a*u^(a-1)*derivate:(u,x)", kw);
+        r.learnDynamicFormula("derivate:(u+v,x)", "derivate:(u,x)+derivate:(v,x)", kw);
+        r.learnDynamicFormula("derivate:(u+v+w,x)", "derivate:(u,x)+derivate:(v,x)+derivate:(w,x)", kw);
+		r.learnDynamicFormula("derivate:(u*v,x)", "derivate:(u,x)*v+u*derivate:(v,x)", kw);
+		r.learnDynamicFormula("derivate:(#,x)", "0", kw);
 		
-		r.learnDynamicFormula("&derivate:(x,x)", "1", kw);
+		r.learnDynamicFormula("derivate:(x,x)", "1", kw);
 		r.learnDynamicFormula("x^1", "x", kw);
 
-        ParsedExpression result = r.TransformationalQuery(expression, kw);
+        String result = r.evaluateExpression("derivate:(3*x^3+2*x^2+4*x,x)");
 
-
+        System.out.println("Result: " + result);
+                             /*
 
 		r.learnStaticFormula("m = &derivate:(fx, x)");
 		r.learnStaticFormula("b = m*(a-x)+y");

@@ -107,9 +107,10 @@ public class DynamicFormula {
                  for (Node aTemp : temp) {
                      ret.child.add(aTemp);            //make all unused children, the children of ret
                  }
-				 
+
+                 Parser.condense(ret);
 				 ArithmeticSolver.simplifySolve(ret);			//apply simplifySolve() before returning
-				 Parser.condense(ret);
+
 				 return ret;
 			 }
 			 else								//otherwise, make new root a children of the old

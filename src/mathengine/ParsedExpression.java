@@ -16,6 +16,11 @@ public class ParsedExpression {
         return rootNode.infix();
     }
 
+    ParsedExpression(){}
 
+    ParsedExpression(String exp)
+    {
+        rootNode = Parser.parse(exp);
+    }
 
 }

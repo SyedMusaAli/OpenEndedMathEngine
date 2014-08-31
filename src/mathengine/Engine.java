@@ -16,7 +16,6 @@ public class Engine {
 
 		public Engine()
 		{
-			//TODO: make provision to load kb from file 
 			KB = new ArrayList<DynamicFormula>();
 			KB2 = new ArrayList<StaticFormula>();
 			steps = new ArrayList<String>();
@@ -45,13 +44,29 @@ public class Engine {
 		{
 			return KnownValues.get(var);
 		}
-		
-		public ParsedExpression TransformationalQuery(ParsedExpression expression, ArrayList<String> keywords)
-        {
-            ParsedExpression result = new ParsedExpression();
-            result.rootNode = TransformationalQuery(expression.rootNode, keywords);
-            return result;
-        }
+
+    ParsedExpression evaluateExpression(ParsedExpression expression, ArrayList<String> keywords)
+    {
+        ParsedExpression result = new ParsedExpression();
+        result.rootNode = TransformationalQuery(expression.rootNode, keywords);
+        return result;
+    }
+
+    public String evaluateExpression(String expression, ArrayList<String> keywords)
+    {
+        ParsedExpression exp = new ParsedExpression(expression);
+        ParsedExpression result = new ParsedExpression();
+        result.rootNode = TransformationalQuery(exp.rootNode, keywords);
+        return result.toString();
+    }
+
+    public String evaluateExpression(String expression)
+    {
+        ParsedExpression exp = new ParsedExpression(expression);
+        ParsedExpression result = new ParsedExpression();
+        result.rootNode = TransformationalQuery(exp.rootNode, new ArrayList<String>());
+        return result.toString();
+    }
 
         Node TransformationalQuery(Node n, ArrayList<String> kw)
 		{
@@ -91,9 +106,9 @@ public class Engine {
 				if(AFL.size() > 0)
 				{
 					exp = AFL.get(0).simplify(exp);
-					System.out.println(exp.DisplayDepthFirst());
+				//	System.out.println(exp.DisplayDepthFirst());
 				}
-			//	System.out.println(exp.infix());
+				System.out.println(exp.infix());
 			}while(AFL.size() > 0);
 			
 			ArithmeticSolver.simplifySolve(exp);
@@ -129,7 +144,7 @@ public class Engine {
 			}
 		}
 		
-		void evaluate(StaticFormula f)			//evaluate DynamicFormula to add result to known
+		void evaluateStaticFormula(StaticFormula f)			//evaluate StaticFormula to add result to known
 		{
 			if(!usableFormulaStatic(f))
 			{
@@ -228,7 +243,7 @@ public class Engine {
 				if(usableFormulaStatic(f) && f.Result.equals(g.tag))	//if perfect, apply
 				{
 					g.chosenPlan = new Plan(f);
-					evaluate(f);
+					evaluateStaticFormula(f);
 					g.achieved = true;
 					return;
 				}
@@ -278,7 +293,7 @@ public class Engine {
 			
 			if(usableFormulaStatic(p.action))		//if all reqs are known, apply DynamicFormula
 			{
-				evaluate(p.action);
+				evaluateStaticFormula(p.action);
 				return true;
 			}
 			else
@@ -305,7 +320,7 @@ public class Engine {
 				
 				if(achieved == p.subgoals.size())
 				{
-					evaluate(p.action);
+					evaluateStaticFormula(p.action);
 					return true;
 				}
 				else
@@ -325,7 +340,7 @@ public class Engine {
 					if(usableFormulaStatic(f) && f.Result.equals(g.tag))	//if perfect, apply
 					{
 						g.chosenPlan = new Plan(f);
-						evaluate(f);
+						evaluateStaticFormula(f);
 						g.achieved = true;
 						return true;
 					}
@@ -364,8 +379,8 @@ public class Engine {
             return g.achieved;
 		}
 		
-		public void rSaveKB(String list, String s)
-		{
+		public void rSaveKB(String list, String s) throws IOException
+        {
 			fw.SaveKB(list,s);
 		}
 

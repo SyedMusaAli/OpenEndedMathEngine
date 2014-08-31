@@ -33,6 +33,31 @@ When adding from a file, each formula needs to be placed on a separate line. Eac
     a*0 => 0
     a*1 => a
     a - a => 0
+    a^1 => a;
+
+Based on the transformations the engine knows, it can be asked to evaluate an algebraic expression:
+
+    String result = myEngine.evaluateExpression("(a+b)^2 -a*b");
+
+##Functions
+
+The engine can be taught simple mathematical functions as well. Functions are defined using the general syntax:
+
+    functionName:(param1 , param2, param3, ...)
+
+This is what truly lets the engine go into new territories like calculus. For example, we can make a file derivative.txt and fill it with:
+
+		derivate:(u^a,x) => a*u^(a-1)*derivate:(u,x)
+		derivate:(u+v,x) => derivate:(u,x)+derivate:(v,x)
+		derivate:(u*v,x) => derivate:(u,x)*v+u*derivate:(v,x)
+		derivate:(exp:(u),x)=> exp:(u)*derivate:(u,x)
+		derivate:(ln:(u),x) => (1/u)*derivate:(u,x)
+		derivate:(#,x) => 0
+		derivate:(x,x) => 1
+
+Here, we are teaching the engine different possible transformations of the derivate function. Thus now the engine is suddenly able to evaluate expressions like:
+
+        derivate:(5*x^3-2*x^2+exp:(x^2))
 
 ##Mathematical Facts (Reasoning)
 
@@ -78,6 +103,5 @@ The above steps can be written in code as:
 
     //Query the Engine with given parameters
     ArrayList<String> ans = myEngine.KnowledgeQuery(GivenValues, ToFind);
-
 
 

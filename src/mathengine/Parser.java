@@ -1,6 +1,8 @@
 package mathEngine;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -180,7 +182,7 @@ public class Parser {
             }
         }
 
-        condense(node);
+        convertToCondensedTree(node);
         node.data = node.data.trim();
         return node;
     }
@@ -266,6 +268,25 @@ public class Parser {
 
     static void condense(Node node)
     {
+        Iterator<Node> it = node.child.iterator();
+        for(int i= 0; i < node.child.size();)
+        {
+            Node aChild = node.child.get(i);
+            if(node.data.equals(aChild.data))
+            {
+                node.child.addAll(aChild.child);
+                node.child.remove(i);
+            }
+            else
+            {
+                condense(aChild);
+                ++i;
+            }
+        }
+    }
+
+    static void convertToCondensedTree(Node node)
+    {
         if(node.condensed)			//return if it has been condensed before
             return;
         else
@@ -301,9 +322,15 @@ public class Parser {
                     Node n = node.child.get(i);              //get ith child
                     if(n.data.equals(node.data) )            //same operator
                     {
-                        node.child.add(i,n.left);            //keep adding the same operator operands of node.left and node.right
-                        node.child.add(i+1,n.right);
-                        node.child.remove(i+2);
+                        for(Node childNode : n.child)
+                        {
+                            node.child.add(childNode);
+                        }
+                        if(n.left != null)
+                            node.child.add(n.left);            //keep adding the same operator operands of node.left and node.right
+                        if(n.left != null)
+                            node.child.add(n.right);
+                        node.child.remove(i);              //remove the original ith child
                     }
                     else
                         ++i;							//else move on
@@ -314,7 +341,7 @@ public class Parser {
         //condense each child of it
         for(Node n: node.child)
         {
-            condense(n);
+            convertToCondensedTree(n);
         }
     }
 }

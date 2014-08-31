@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class Excelfile {
 
-public void evaluate(String fname) throws IOException
+public void evaluateStaticFormula(String fname) throws IOException
 {
 
 	Engine r = Engine.instance();

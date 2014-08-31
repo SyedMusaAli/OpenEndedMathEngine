@@ -22,21 +22,14 @@ class FileWriter1 {
 		
 	}
 
-	public void SaveKB(String string, String fname)
-	{
-		try {
+	public void SaveKB(String string, String fname) throws IOException
+    {
 			FileWriter f2 = new FileWriter(fname,true);//append mode
 			BufferedWriter bw = new BufferedWriter(f2);//create file
 			bw.write(string);
 			//System.out.println((buffer.toString()));
 			bw.newLine();
 			bw.close();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		 
 	}
 	
 	public void AppendKB(String string, String fname)
